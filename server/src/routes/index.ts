@@ -18,4 +18,9 @@ export const AppRoutes = [
     method: 'put',
     action: putMyCart,
   },
+  {
+    path: '/api/items/purchase',
+    method: 'post',
+    action: purchaseItems,
+  },
 ];

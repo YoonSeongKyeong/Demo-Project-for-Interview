@@ -6,5 +6,4 @@ export class UserService {
   constructor() {
     this.userRepository = getRepository(User);
   }
-  serviceFunc = () => {};
 }
