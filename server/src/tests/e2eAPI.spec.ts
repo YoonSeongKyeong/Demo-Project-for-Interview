@@ -62,40 +62,39 @@ describe('Integration API Test: ', () => {
   // -------------------------------------------------------------------------
 
   describe('Test client-API', () => {
-    describe('API NAME', () => {
-      it('descriptive test name', async () => {
-        const reqBody = {};
-        const resBody = {};
-        return await request(app)
-          .post('/api/items')
-          .set('Content-Type', 'application/json')
-          .send(reqBody)
-          .expect(200)
-          .expect('Content-Type', 'application/json; charset=utf-8')
-          .expect(resBody);
-      });
-    });
-    describe('API NAME', () => {
-      it('descriptive test name', async () => {
-        //   const reqBody = {};
-        //   return await request(app)
-        //     .get('/api/~~~')
-        //     .query({ reqBody: JSON.stringify(reqBody) })
-        //     .set('Content-Type', 'application/json')
-        //     .set('Cookie', `token=${'user-jwt'}`)
-        //     .send()
-        //     .expect(404)
-        //     .then(async res => {
-        //       // parse cookie
-        //       const parseCookie = res.header['set-cookie'][0]
-        //         .split(',')
-        //         .map((item: string) => item.split(';')[0]);
-        //       const [key] = parseCookie[0].split('=');
-        //       const expiration = new Date(parseCookie[1]).getTime();
-        //       expect(expiration).toBeLessThan(Date.now()); // cleared
-        //       expect(key).toEqual('token');
-        //     });
-      });
-    });
+    // describe('API NAME', () => {
+    //   it('descriptive test name', async () => {
+    //     const reqBody = {};
+    //     const resBody = {};
+    //     return await request(app)
+    //       .post('/api/items')
+    //       .set('Content-Type', 'application/json')
+    //       .send(reqBody)
+    //       .expect(200)
+    //       .expect('Content-Type', 'application/json; charset=utf-8')
+    //       .expect(resBody);
+    //   });
+    // });
+    // describe('API NAME', () => {
+    //   it('descriptive test name', async () => {
+    //     //   const reqBody = {};
+    //     //   return await request(app)
+    //     //     .get('/api/~~~')
+    //     //     .query({ reqBody: JSON.stringify(reqBody) })
+    //     //     .set('Content-Type', 'application/json')
+    //     //     .set('Cookie', `token=${'user-jwt'}`)
+    //     //     .send()
+    //     //     .expect(404)
+    //     //     .then(async res => {
+    //     //       // parse cookie
+    //     //       const parseCookie = res.header['set-cookie'][0]
+    //     //         .split(',')
+    //     //         .map((item: string) => item.split(';')[0]);
+    //     //       const [key] = parseCookie[0].split('=');
+    //     //       const expiration = new Date(parseCookie[1]).getTime();
+    //     //       expect(expiration).toBeLessThan(Date.now()); // cleared
+    //     //       expect(key).toEqual('token');
+    //     //     });
+    //   });
   });
 });
