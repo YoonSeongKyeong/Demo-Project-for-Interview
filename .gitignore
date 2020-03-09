@@ -1,4 +1,27 @@
 # CLIENT
 
+# nodejs
 /client/node_modules
+
+# build output
 /client/build
+
+# SERVER
+
+# config
+/server/config
+
+# nodejs
+/server/node_modules
+
+# build output
+server/dist/
+
+# test output
+server/coverage/
+
+# log
+/server/yarn-error.log
+
+# create-schema->migration for test
+server/src/tests/migration/*.ts
