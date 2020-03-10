@@ -1,8 +1,19 @@
+import { deleteMyCart } from '../controller/deleteMyCart';
+import { getItems } from '../controller/getItems';
+import { getMyCart } from '../controller/getMyCart';
+import { postMyCart } from '../controller/postMyCart';
+import { purchaseItems } from '../controller/purchaseItems';
+
 /**
  * All application routes.
  */
 
 export const AppRoutes = [
+  {
+    path: '/api/mycart',
+    method: 'delete',
+    action: deleteMyCart,
+  },
   {
     path: '/api/items',
     method: 'get',
@@ -15,8 +26,8 @@ export const AppRoutes = [
   },
   {
     path: '/api/mycart',
-    method: 'put',
-    action: putMyCart,
+    method: 'post',
+    action: postMyCart,
   },
   {
     path: '/api/items/purchase',
