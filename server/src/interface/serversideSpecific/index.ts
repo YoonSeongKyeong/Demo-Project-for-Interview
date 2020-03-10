@@ -157,6 +157,10 @@ export interface UpdateWishEntity extends Wish_Dependency {
   item?: Item;
 }
 
-export interface TokenForJWT {
+export interface TokenForAuth {
   id: string; // 유저 id
+}
+
+export interface TokenForWish {
+  itemIdList: string[]; // 장바구니 목록의 상품 id 리스트
 }
