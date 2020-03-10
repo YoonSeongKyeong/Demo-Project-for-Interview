@@ -16,7 +16,7 @@ export class User {
   @Column({ nullable: true, default: 0 })
   cash: number; // 유저 충전금
 
-  @Column()
+  @Column({ unique: true })
   email: number; // 유저 로그인 이메일
 
   @OneToMany(
