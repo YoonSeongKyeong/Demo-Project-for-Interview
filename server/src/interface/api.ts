@@ -60,6 +60,7 @@ export interface PostMyCartReq extends Item_Dependency, Wish_Dependency {
 export interface PostMyCartRes extends Wish_Dependency {
   isSuccess: boolean;
 }
+
 export interface DeleteMyCartReq extends Item_Dependency, Wish_Dependency {
   itemIdList: string[];
 }
