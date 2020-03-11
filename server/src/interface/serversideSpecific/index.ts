@@ -18,7 +18,7 @@ import {
   User_Dependency,
   Wish_Dependency,
 } from '../dependency';
-import { ItemForm, GetItemsReq } from '../api';
+import { ItemForm, GetItemsReq, PurchaseItemRes } from '../api';
 
 export interface Configs {
   LOAD_CONFIG: string; // 정상적으로 .env 파일이 로드되었는지 확인
@@ -100,7 +100,7 @@ export interface UpdateProviderEntity extends Provider_Dependency {
 }
 
 export interface CreatePurchasedEntity extends Purchased_Dependency {
-  purchasedAt: Date; // 구매한 시각
+  purchasedAt?: Date; // 구매한 시각
   status: string; // 상품 상태
   optionLog: string; // 선택옵션 json
   shippingLog: string; // 선택배송방식 json
@@ -191,3 +191,14 @@ export type WishService_AddItemIdListOfUserOutput = void;
 export type WishService_DeleteItemIdListOfUserInput = TokenForWish & UserIdInput;
 
 export type WishService_DeleteItemIdListOfUserOutput = void;
+
+export type PurchaseItemService_PurchaseByItemFormListAndUserIdInput = {
+  itemFormList: ItemForm[];
+  userId: number;
+};
+
+export type PurchaseItemService_PurchaseByItemFormListAndUserIdOutput = PurchaseItemRes;
+
+export type ValidateItemFormToItemInput = { itemForm: ItemForm; item: Item };
+
+export type ValidateItemFormToItemOutput = boolean;
