@@ -29,7 +29,7 @@ export class PurchaseItemService {
   }: PurchaseItemService_PurchaseByItemFormListAndUserIdInput): Promise<
     PurchaseItemService_PurchaseByItemFormListAndUserIdOutput
   > => {
-    itemFormList.sort((a, b) => b.id - a.id); // update 시 Deadlock을 방지하기 위해서 itemId 오름차순으로 sort한다.
+    itemFormList.sort((a, b) => a.id - b.id); // update 시 Deadlock을 방지하기 위해서 itemId 오름차순으로 sort한다.
 
     // 실제로는 외부 API를 사용할 것이므로 현재 구현한 것에서 변경이 필요할 것이다.
     // 상품 구매 form의 상품 정보가 구매 직전 상품 정보와 일치하지 않거나 재고보다 많은 양을 구매하려고 할 때 구매가 실패한다.
