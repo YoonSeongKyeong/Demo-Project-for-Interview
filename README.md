@@ -5,6 +5,9 @@
 <hr>
 
 ## **진행상황**
+- ### **Server /Service: 90% 구현 및 결제 유틸 함수들 설계 및 구현 (2020.03.11)**
+- ### **Server /Factory: 100%, Router:90%, /Controller: 80% /Service: 30% 구현 (2020.03.10)**
+- ### **Server 구조 기획 및 폴더 구조로 layered structure 구현, ER Diagram 및 Relational Model 설계 (2020.03.09)**
 - ### **Client 스터디 (React + Redux + Typescript) (2020.03.08)**
 - ### **프로젝트 기본 구조 설계 (2020.03.07)**
 - ### **기획 문서 작성 (2020.03.06)**
