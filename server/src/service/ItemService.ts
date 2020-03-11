@@ -52,15 +52,15 @@ export class ItemService {
     criteria: ItemService_GetItemFormListByCriteriaInput,
   ): Promise<ItemService_GetItemFormListByCriteriaOutput> => {
     let query = criteria.q;
-    if (!!query) {
+    if (!query) {
       query = '';
     }
     let offset = parseInt(criteria.offset);
-    if (!!offset) {
+    if (!offset) {
       offset = 0;
     }
     let limit = parseInt(criteria.limit);
-    if (!!limit) {
+    if (!limit) {
       limit = 20; // default items/page
     }
     const getItems = await this.itemRepository.find({
