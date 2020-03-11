@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, Check } from 'typeorm';
 import { Item } from './Item';
 
 @Entity()
@@ -13,6 +13,7 @@ export class Option {
   size: string; // 사이즈
 
   @Column()
+  @Check(`"stock">=0`) // 음수가 아니라는 제약조건 생성
   stock: number; // 재고
 
   @ManyToOne(
