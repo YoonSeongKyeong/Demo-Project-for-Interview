@@ -13,7 +13,7 @@ export class Option {
   size: string; // 사이즈
 
   @Column()
-  stock: boolean; // 재고
+  stock: number; // 재고
 
   @ManyToOne(
     type => Item,
