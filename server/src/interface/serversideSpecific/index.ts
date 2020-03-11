@@ -80,13 +80,13 @@ export interface UpdateItemEntity extends Item_Dependency {
 export interface CreateOptionEntity extends Option_Dependency {
   color: string; // 색상
   size: string; // 사이즈
-  stock: boolean; // 재고
+  stock: number; // 재고
   item: Item;
 }
 export interface UpdateOptionEntity extends Option_Dependency {
   color?: string; // 색상
   size?: string; // 사이즈
-  stock?: boolean; // 재고
+  stock?: number; // 재고
   item?: Item;
 }
 
