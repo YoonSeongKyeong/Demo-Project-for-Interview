@@ -1,4 +1,4 @@
-import { Entity, Column, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, OneToMany, PrimaryGeneratedColumn, Check } from 'typeorm';
 import { Purchased } from './Purchased';
 import { Wish } from './Wish';
 
@@ -13,6 +13,7 @@ export class User {
   @Column()
   password: string; // 유저 비밀번호
 
+  @Check(`'cash' >= 0`)
   @Column({ nullable: true, default: 0 })
   cash: number; // 유저 충전금
 
