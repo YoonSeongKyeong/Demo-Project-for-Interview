@@ -31,7 +31,7 @@ export async function deleteMyCart(request: Request, response: Response): Promis
 
       if (id && (await userService.isValidUser(id))) {
         // 로그인이 되어 있다면, Wish 목록에서 삭제 요청된 상품들을 지운다.
-        await wishService.deleteItemIdListOfUser(itemIdList, id);
+        await wishService.deleteItemIdListOfUser({ itemIdList, userId: id });
         // 기본적으로 장바구니 토큰에서 삭제 요청된 상품들을 지운다.
         reqBody.itemIdList.forEach(id => {
           // 현재는 장바구니에 추가하는 상품 수가 별로 없어서 O(N^2) 알고리즘을 쓰지만, 만약 scalability가 필요하다면, 오름차순을 유지하며 binarysearch로 O(NlgN)만에 처리할 수 있다. or 두 배열을 병합한 뒤 sort하고 중복된 것을 제외하고 넣어도 O(NlgN)

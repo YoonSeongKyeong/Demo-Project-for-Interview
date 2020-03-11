@@ -164,7 +164,7 @@ export interface TokenForAuth {
 
 export type ItemIdList = number[];
 
-export interface TokenForWish {
+export interface TokenForWish extends Wish_Dependency, Item_Dependency {
   itemIdList: ItemIdList; // 장바구니 목록의 상품 id 리스트
 }
 
@@ -184,8 +184,10 @@ export type WishService_GetItemIdListOfUserInput = UserIdInput;
 
 export type WishService_GetItemIdListOfUserOutput = ItemIdList;
 
-export type WishService_AddItemIdListOfUserInput = {
-  itemIdList: ItemIdList;
-} & UserIdInput;
+export type WishService_AddItemIdListOfUserInput = TokenForWish & UserIdInput;
 
 export type WishService_AddItemIdListOfUserOutput = void;
+
+export type WishService_DeleteItemIdListOfUserInput = TokenForWish & UserIdInput;
+
+export type WishService_DeleteItemIdListOfUserOutput = void;

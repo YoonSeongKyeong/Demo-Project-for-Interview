@@ -7,6 +7,8 @@ import {
   WishService_AddItemIdListOfUserInput,
   WishService_AddItemIdListOfUserOutput,
   CreateWishEntity,
+  WishService_DeleteItemIdListOfUserInput,
+  WishService_DeleteItemIdListOfUserOutput,
 } from '../interface/serversideSpecific';
 import { User } from '../entity/User';
 import { Item } from '../entity/Item';
@@ -82,5 +84,18 @@ export class WishService {
         return this.wishRepository.save(newWish);
       }),
     );
+  };
+  deleteItemIdListOfUser = async ({
+    itemIdList,
+    userId,
+  }: WishService_DeleteItemIdListOfUserInput): Promise<
+    WishService_DeleteItemIdListOfUserOutput
+  > => {
+    await this.wishRepository
+      .createQueryBuilder()
+      .delete()
+      .from(Wish)
+      .where(`user.id = ${userId} AND (item.id = ${itemIdList.join(` OR item.id = `)})`)
+      .execute();
   };
 }
