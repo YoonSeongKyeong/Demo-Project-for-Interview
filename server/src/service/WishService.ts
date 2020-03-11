@@ -1,9 +1,86 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import { getRepository, Repository } from 'typeorm';
 import { Wish } from '../entity/Wish';
+import {
+  WishService_GetItemIdListOfUserOutput,
+  WishService_GetItemIdListOfUserInput,
+  WishService_AddItemIdListOfUserInput,
+  WishService_AddItemIdListOfUserOutput,
+  CreateWishEntity,
+} from '../interface/serversideSpecific';
+import { User } from '../entity/User';
+import { Item } from '../entity/Item';
 
 export class WishService {
+  // WishService는 Item, User를 연결하는 Wish라는 JoinTable의 Service를 제공한다.
   wishRepository: Repository<Wish>;
+  userRepository: Repository<User>;
+  itemRepository: Repository<Item>;
   constructor() {
     this.wishRepository = getRepository(Wish);
+    this.userRepository = getRepository(User);
+    this.itemRepository = getRepository(Item);
   }
+
+  getItemIdListOfUser = async ({
+    userId,
+  }: WishService_GetItemIdListOfUserInput): Promise<WishService_GetItemIdListOfUserOutput> => {
+    const getItemIdObj = await this.wishRepository
+      .createQueryBuilder('wish')
+      .select('wish.item.id', 'id')
+      .where(`wish.user.id = :userId`, { userId })
+      .getRawMany();
+    return getItemIdObj.map(idObj => idObj.id);
+  };
+
+  addItemIdListOfUser = async ({
+    itemIdList,
+    userId,
+  }: WishService_AddItemIdListOfUserInput): Promise<WishService_AddItemIdListOfUserOutput> => {
+    const [getItemIdObj, getUserById] = await Promise.all([
+      await this.wishRepository // 유저 장바구니에 등록된 싱픔 Id 리스트 와 유저 객체를 가져온다.
+        .createQueryBuilder('wish')
+        .select('wish.item.id', 'id')
+        .where(`wish.user.id = :userId`, { userId })
+        .getRawMany(),
+      await this.userRepository.findOne({ id: userId }),
+    ]);
+    if (!getUserById) {
+      throw new Error('Invalid User Id');
+    }
+    const itemIdListToAdd = [...itemIdList];
+    for (const itemIdObj of getItemIdObj) {
+      // 새로 추가할 상품 id에서 이미 장바구니에 있는 id는 제거한다.
+      const indexOfDuplicate = itemIdListToAdd.indexOf(itemIdObj.id);
+      if (indexOfDuplicate != -1) {
+        itemIdListToAdd.splice(indexOfDuplicate, 1);
+      }
+    }
+    let getListOfItemsToAdd: Item[];
+    try {
+      // 장바구니의 추가할 id가 valid한지 확인하고, wish에 user와 연결할 item을 가져온다.
+      getListOfItemsToAdd = await Promise.all(
+        itemIdListToAdd.map(itemId =>
+          this.itemRepository.findOne({ id: itemId }).then(item => {
+            if (!item) {
+              throw new Error('Invalid Item Id');
+            }
+            return item;
+          }),
+        ),
+      );
+    } catch (error) {
+      throw new Error('Invalid Item Id');
+    }
+    await Promise.all(
+      // User와 Item을 연결하는 Wish를 생성한다.
+      getListOfItemsToAdd.map(item => {
+        const newWish: CreateWishEntity = {
+          item: item,
+          user: getUserById,
+        };
+        return this.wishRepository.save(newWish);
+      }),
+    );
+  };
 }

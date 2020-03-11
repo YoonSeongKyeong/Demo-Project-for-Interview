@@ -162,10 +162,26 @@ export interface TokenForAuth {
   id: number; // 유저 id
 }
 
+export type ItemIdList = number[];
+
 export interface TokenForWish {
-  itemIdList: string[]; // 장바구니 목록의 상품 id 리스트
+  itemIdList: ItemIdList; // 장바구니 목록의 상품 id 리스트
+}
+
+export interface UserIdInput extends User_Dependency {
+  userId: number;
 }
 
 export type ItemService_GetItemFormListByCriteriaInput = GetItemsReq;
 
 export type ItemService_GetItemFormListByCriteriaOutput = ItemForm[];
+
+export type WishService_GetItemIdListOfUserInput = UserIdInput;
+
+export type WishService_GetItemIdListOfUserOutput = ItemIdList;
+
+export type WishService_AddItemIdListOfUserInput = {
+  itemIdList: ItemIdList;
+} & UserIdInput;
+
+export type WishService_AddItemIdListOfUserOutput = void;
