@@ -25,7 +25,7 @@ export async function getMyCart(request: Request, response: Response): Promise<v
     const wish = (await extractJWT('wish', request)) as TokenForWish;
     const { itemIdList } = wish;
 
-    if (id && userService.isValidUser()) {
+    if (id && (await userService.isValidUser(id))) {
       // 만약 로그인이 된 상황이라면 자신의 Wish에 장바구니 토큰의 목록을 동기화한 후 Wish목록의 상품들을 가져온다.
       await wishService.addItemIdListOfUser(itemIdList, id);
       goods = await itemService.getItemFormListByItemIdList(

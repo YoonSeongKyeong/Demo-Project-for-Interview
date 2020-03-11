@@ -26,7 +26,7 @@ export async function postMyCart(request: Request, response: Response): Promise<
       const userService = new UserService();
       const wishService = new WishService();
 
-      if (id && userService.isValidUser()) {
+      if (id && (await userService.isValidUser(id))) {
         // 만약 로그인이 된 상황이라면 자신의 Wish에 상품들을 추가한다.
         await wishService.addItemIdListOfUser(itemIdList, id);
         // 기본적으로 장바구니 토큰에 상품들을 추가한다.

@@ -29,7 +29,7 @@ export async function deleteMyCart(request: Request, response: Response): Promis
       const userService = new UserService();
       const wishService = new WishService();
 
-      if (id && userService.isValidUser()) {
+      if (id && (await userService.isValidUser(id))) {
         // 로그인이 되어 있다면, Wish 목록에서 삭제 요청된 상품들을 지운다.
         await wishService.deleteItemIdListOfUser(itemIdList, id);
         // 기본적으로 장바구니 토큰에서 삭제 요청된 상품들을 지운다.

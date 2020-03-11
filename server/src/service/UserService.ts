@@ -6,4 +6,9 @@ export class UserService {
   constructor() {
     this.userRepository = getRepository(User);
   }
+
+  isValidUser = async (userId: number): Promise<boolean> => {
+    const user = await this.userRepository.findOne({ id: userId });
+    return user !== undefined;
+  };
 }
