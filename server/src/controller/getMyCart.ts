@@ -20,38 +20,45 @@ export async function getMyCart(request: Request, response: Response): Promise<v
 
   let goods: ItemForm[];
   try {
-    const auth = (await extractJWT('auth', request)) as TokenForAuth;
-    const { id } = auth;
     const wish = (await extractJWT('wish', request)) as TokenForWish;
     const { itemIdList } = wish;
+    try {
+      const auth = (await extractJWT('auth', request)) as TokenForAuth;
+      const { id } = auth;
 
-    if (id && (await userService.isValidUser(id))) {
-      // 만약 로그인이 된 상황이라면 자신의 Wish에 장바구니 토큰의 목록을 동기화한 후 Wish목록의 상품들을 가져온다.
-      await wishService.addItemIdListOfUser({ itemIdList, userId: id });
-      goods = await itemService.getItemFormListByItemIdList(
-        await wishService.getItemIdListOfUser({ userId: id }),
-      );
-      resBody = { goods };
-      response.status(200).json(resBody);
-    } else {
-      throw new Error('Invalid User Id');
+      if (id && (await userService.isValidUser(id))) {
+        // 만약 로그인이 된 상황이라면 자신의 Wish에 장바구니 토큰의 목록을 동기화한 후 Wish목록의 상품들을 가져온다.
+        await wishService.addItemIdListOfUser({ itemIdList, userId: id });
+        goods = await itemService.getItemFormListByItemIdList(
+          await wishService.getItemIdListOfUser({ userId: id }),
+        );
+        resBody = { goods };
+        response.status(200).json(resBody);
+      } else {
+        throw new Error('Invalid User Id');
+      }
+    } catch (error) {
+      if (
+        error.message === 'Invalid Token Name [auth]' ||
+        error.message === 'cannot find token in cookie [auth]' ||
+        error.message === 'Invalid User Id'
+      ) {
+        // 유저 정보가 없는 경우
+        if (error.message === 'Invalid User Id') {
+          // id가 유효하지 않은 경우, Clear Cookie
+          response.clearCookie('auth', { domain: configs.CLIENT_DOMAIN, path: '/' });
+        }
+        // 기본적으로 장바구니 토큰을 가지고 상품을 가져온다.
+        goods = await itemService.getItemFormListByItemIdList(itemIdList);
+        resBody = { goods };
+        response.status(200).json(resBody);
+      } else {
+        console.log('ERROR: ' + error.message);
+        response.status(500).send(error.message);
+      }
     }
   } catch (error) {
     if (
-      error.message === 'Invalid Token Name [auth]' ||
-      error.message === 'cannot find token in cookie [auth]' ||
-      error.message === 'Invalid User Id'
-    ) {
-      // 유저 정보가 없는 경우
-      if (error.message === 'Invalid User Id') {
-        // id가 유효하지 않은 경우, Clear Cookie
-        response.clearCookie('auth', { domain: configs.CLIENT_DOMAIN, path: '/' });
-      }
-      // 기본적으로 장바구니 토큰을 가지고 상품을 가져온다.
-      goods = await itemService.getItemFormListByItemIdList(itemIdList);
-      resBody = { goods };
-      response.status(200).json(resBody);
-    } else if (
       error.message === 'Invalid Token Name [wish]' ||
       error.message === 'cannot find token in cookie [wish]'
     ) {
