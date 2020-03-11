@@ -18,6 +18,7 @@ import {
   User_Dependency,
   Wish_Dependency,
 } from '../dependency';
+import { ItemForm, GetItemsReq } from '../api';
 
 export interface Configs {
   LOAD_CONFIG: string; // 정상적으로 .env 파일이 로드되었는지 확인
@@ -158,9 +159,13 @@ export interface UpdateWishEntity extends Wish_Dependency {
 }
 
 export interface TokenForAuth {
-  id: string; // 유저 id
+  id: number; // 유저 id
 }
 
 export interface TokenForWish {
   itemIdList: string[]; // 장바구니 목록의 상품 id 리스트
 }
+
+export type ItemService_GetItemFormListByCriteriaInput = GetItemsReq;
+
+export type ItemService_GetItemFormListByCriteriaOutput = ItemForm[];

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/class-name-casing */
 /* eslint-disable @typescript-eslint/camelcase */
 // 서버 API와 관련된 interface를 모아둡니다.
 import {
@@ -14,14 +15,14 @@ export interface GetItemsReq extends Item_Dependency {
   limit: string;
 }
 
-export interface Options extends Option_Dependency {
+export interface ItemForm_Option extends Option_Dependency {
   id: number;
   color: string;
   size: string;
   stock: number;
 }
 
-export interface Shipping extends Shipping_Dependency {
+export interface ItemForm_Shipping extends Shipping_Dependency {
   method: string;
   price: number;
   canBundle: boolean;
@@ -30,10 +31,11 @@ export interface Shipping extends Shipping_Dependency {
 export interface ItemForm extends Item_Dependency {
   id: number;
   name: string;
-  provider: string;
+  titleImage: string;
   price: number;
-  options: Options[];
-  shipping: Shipping;
+  provider: string;
+  options: ItemForm_Option[];
+  shipping: ItemForm_Shipping;
 }
 
 export interface GetItemsRes {
