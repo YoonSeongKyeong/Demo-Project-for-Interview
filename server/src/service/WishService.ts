@@ -95,7 +95,7 @@ export class WishService {
       .createQueryBuilder()
       .delete()
       .from(Wish)
-      .where(`user.id = ${userId} AND (item.id = ${itemIdList.join(` OR item.id = `)})`)
+      .where(`user.id = ${userId} AND (item.id = ${itemIdList.join(` OR item.id = `)})`) // UserId와 유저id가 같으면서 제출한 ItemId와 상품id가 같은 모든 Wish를 지운다.
       .execute();
   };
 }
