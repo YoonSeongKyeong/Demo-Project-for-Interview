@@ -58,7 +58,7 @@ export async function getMyCart(request: Request, response: Response): Promise<v
       // 장바구니 정보가 없는 경우 새로 만들어준다.
       goods = [];
       const itemIdList: string[] = [];
-      response.cookie('wish', signJWT(itemIdList), {
+      response.cookie('wish', signJWT({ itemIdList }), {
         expires: new Date(Date.now() + 900000000000),
         httpOnly: true,
         domain: configs.CLIENT_DOMAIN,

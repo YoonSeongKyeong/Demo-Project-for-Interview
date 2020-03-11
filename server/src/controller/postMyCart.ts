@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
 import { PostMyCartReq, PostMyCartRes } from '../interface/api';
 import { TokenForAuth, TokenForWish } from '../interface/serversideSpecific';
+import { UserService } from '../service/UserService';
+import { WishService } from '../service/WishService';
 import { configs } from '../utils/configs';
 import { extractJWT } from '../utils/extractJWT';
 import { signJWT } from '../utils/signJWT';
-import { UserService } from '../service/UserService';
-import { WishService } from '../service/WishService';
 
 // 장바구니 추가
 
@@ -36,7 +36,7 @@ export async function postMyCart(request: Request, response: Response): Promise<
             itemIdList.push(id);
           }
         });
-        response.cookie('wish', signJWT(itemIdList), {
+        response.cookie('wish', signJWT({ itemIdList }), {
           expires: new Date(Date.now() + 900000000000),
           httpOnly: true,
           domain: configs.CLIENT_DOMAIN,
@@ -65,7 +65,7 @@ export async function postMyCart(request: Request, response: Response): Promise<
             itemIdList.push(id);
           }
         });
-        response.cookie('wish', signJWT(itemIdList), {
+        response.cookie('wish', signJWT({ itemIdList }), {
           expires: new Date(Date.now() + 900000000000),
           httpOnly: true,
           domain: configs.CLIENT_DOMAIN,
@@ -84,7 +84,7 @@ export async function postMyCart(request: Request, response: Response): Promise<
       error.message === 'cannot find token in cookie [wish]'
     ) {
       // 장바구니 정보가 없는 경우 새로 만들어준다.
-      response.cookie('wish', signJWT(reqBody.itemIdList), {
+      response.cookie('wish', signJWT({ itemIdList: reqBody.itemIdList }), {
         expires: new Date(Date.now() + 900000000000),
         httpOnly: true,
         domain: configs.CLIENT_DOMAIN,
