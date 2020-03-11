@@ -5,6 +5,8 @@ import { Item } from '../entity/Item';
 import {
   ItemService_GetItemFormListByCriteriaInput,
   ItemService_GetItemFormListByCriteriaOutput,
+  ItemService_GetItemFormListByItemIdListInput,
+  ItemService_GetItemFormListByItemIdListOutput,
 } from '../interface/serversideSpecific';
 import { ItemForm, ItemForm_Option, ItemForm_Shipping } from '../interface/api';
 
@@ -14,28 +16,8 @@ export class ItemService {
     this.itemRepository = getRepository(Item);
   }
 
-  getItemFormListByCriteria = async (
-    criteria: ItemService_GetItemFormListByCriteriaInput,
-  ): Promise<ItemService_GetItemFormListByCriteriaOutput> => {
-    let query = criteria.q;
-    if (!!query) {
-      query = '';
-    }
-    let offset = parseInt(criteria.offset);
-    if (!!offset) {
-      offset = 0;
-    }
-    let limit = parseInt(criteria.limit);
-    if (!!limit) {
-      limit = 20; // default items/page
-    }
-    const getItems = await this.itemRepository.find({
-      relations: ['provider', 'options', 'shipping'],
-      where: { name: Like(`%${query}%`) },
-      skip: offset,
-      take: limit,
-    });
-    return getItems.map(item => {
+  private ConvertItemEntityListToItemFormList = (items: Item[]): ItemForm[] =>
+    items.map(item => {
       // item form 작성, 필요한 property만 추출
       const options = item.options.map(option => {
         const { id, color, size, stock } = option;
@@ -65,5 +47,38 @@ export class ItemService {
 
       return itemForm;
     });
+
+  getItemFormListByCriteria = async (
+    criteria: ItemService_GetItemFormListByCriteriaInput,
+  ): Promise<ItemService_GetItemFormListByCriteriaOutput> => {
+    let query = criteria.q;
+    if (!!query) {
+      query = '';
+    }
+    let offset = parseInt(criteria.offset);
+    if (!!offset) {
+      offset = 0;
+    }
+    let limit = parseInt(criteria.limit);
+    if (!!limit) {
+      limit = 20; // default items/page
+    }
+    const getItems = await this.itemRepository.find({
+      relations: ['provider', 'options', 'shipping'],
+      where: { name: Like(`%${query}%`) },
+      skip: offset,
+      take: limit,
+    });
+    return this.ConvertItemEntityListToItemFormList(getItems);
+  };
+
+  getItemFormListByItemIdList = async (
+    itemIdList: ItemService_GetItemFormListByItemIdListInput,
+  ): Promise<ItemService_GetItemFormListByItemIdListOutput> => {
+    const getItems = await this.itemRepository.find({
+      relations: ['provider', 'options', 'shipping'],
+      where: itemIdList.map(id => ({ id })),
+    });
+    return this.ConvertItemEntityListToItemFormList(getItems);
   };
 }

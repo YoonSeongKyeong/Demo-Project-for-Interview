@@ -27,9 +27,9 @@ export async function getMyCart(request: Request, response: Response): Promise<v
 
     if (id && (await userService.isValidUser(id))) {
       // 만약 로그인이 된 상황이라면 자신의 Wish에 장바구니 토큰의 목록을 동기화한 후 Wish목록의 상품들을 가져온다.
-      await wishService.addItemIdListOfUser(itemIdList, id);
+      await wishService.addItemIdListOfUser({ itemIdList, userId: id });
       goods = await itemService.getItemFormListByItemIdList(
-        await wishService.getItemIdListOfUser(id),
+        await wishService.getItemIdListOfUser({ userId: id }),
       );
       resBody = { goods };
       response.status(200).json(resBody);

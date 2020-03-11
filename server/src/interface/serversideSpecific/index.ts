@@ -176,6 +176,10 @@ export type ItemService_GetItemFormListByCriteriaInput = GetItemsReq;
 
 export type ItemService_GetItemFormListByCriteriaOutput = ItemForm[];
 
+export type ItemService_GetItemFormListByItemIdListInput = ItemIdList;
+
+export type ItemService_GetItemFormListByItemIdListOutput = ItemForm[];
+
 export type WishService_GetItemIdListOfUserInput = UserIdInput;
 
 export type WishService_GetItemIdListOfUserOutput = ItemIdList;
