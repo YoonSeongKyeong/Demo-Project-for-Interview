@@ -14,7 +14,7 @@ export async function getItems(request: Request, response: Response): Promise<vo
     const { q, offset, limit } = request.query; // interface 외의 정보 제거
     reqBody = { q, offset, limit };
     // ItemService를 이용해서 요청한 조건의 Item 정보를 모두 불러온다. (Provider, Shipping 및 Options 정보를 같이 불러온다.)
-    const goods: ItemForm[] = await itemService.getItemFormListByQueryOffsetLimit(reqBody);
+    const goods: ItemForm[] = await itemService.getItemFormListByCriteria(reqBody);
     resBody = { goods };
     response.status(200).json(resBody);
   } catch (error) {
