@@ -56,7 +56,7 @@ export interface PurchaseItemRes extends Item_Dependency, Purchased_Dependency {
 }
 
 export interface PostMyCartReq extends Item_Dependency, Wish_Dependency {
-  itemIdList: string[];
+  itemIdList: number[];
 }
 
 export interface PostMyCartRes extends Wish_Dependency {
@@ -64,7 +64,7 @@ export interface PostMyCartRes extends Wish_Dependency {
 }
 
 export interface DeleteMyCartReq extends Item_Dependency, Wish_Dependency {
-  itemIdList: string[];
+  itemIdList: number[];
 }
 
 export interface DeleteMyCartRes extends Wish_Dependency {

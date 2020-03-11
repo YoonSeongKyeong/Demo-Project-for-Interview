@@ -28,7 +28,7 @@ export async function postMyCart(request: Request, response: Response): Promise<
 
       if (id && (await userService.isValidUser(id))) {
         // 만약 로그인이 된 상황이라면 자신의 Wish에 상품들을 추가한다.
-        await wishService.addItemIdListOfUser(itemIdList, id);
+        await wishService.addItemIdListOfUser({ itemIdList, userId: id });
         // 기본적으로 장바구니 토큰에 상품들을 추가한다.
         reqBody.itemIdList.forEach(id => {
           // 현재는 장바구니에 추가하는 상품 수가 별로 없어서 O(N^2) 알고리즘을 쓰지만, 만약 scalability가 필요하다면, 오름차순을 유지하며 binarysearch로 O(NlgN)만에 처리할 수 있다. or 두 배열을 병합한 뒤 sort하고 중복된 것을 제외하고 넣어도 O(NlgN)
