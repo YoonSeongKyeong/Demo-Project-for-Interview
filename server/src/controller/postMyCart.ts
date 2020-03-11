@@ -45,16 +45,16 @@ export async function postMyCart(request: Request, response: Response): Promise<
         resBody = { isSuccess: true };
         response.status(200).json(resBody);
       } else {
-        throw new Error('Invalid Id');
+        throw new Error('Invalid User Id');
       }
     } catch (error) {
       if (
         error.message === 'Invalid Token Name [auth]' ||
         error.message === 'cannot find token in cookie [auth]' ||
-        error.message === 'Invalid Id'
+        error.message === 'Invalid User Id'
       ) {
         // 유저 정보가 없는 경우
-        if (error.message === 'Invalid Id') {
+        if (error.message === 'Invalid User Id') {
           // id가 유효하지 않은 경우, Clear Cookie
           response.clearCookie('auth', { domain: configs.CLIENT_DOMAIN, path: '/' });
         }
