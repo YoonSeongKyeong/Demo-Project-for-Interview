@@ -61,6 +61,10 @@ export class PurchaseItemService {
           throw new Error('Invalid Item Form');
         }
         for (const option of itemForm.options) {
+          if (option.stock <= 0) {
+            // 유효하지 않은 구매 옵션은 건너뛴다.
+            continue;
+          }
           await transactionalEntityManager.decrement(
             Option,
             { id: option.id },
