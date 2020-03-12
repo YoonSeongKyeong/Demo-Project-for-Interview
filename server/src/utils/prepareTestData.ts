@@ -15,8 +15,8 @@ import { testImg } from '../tests/testImg';
 import { createItem } from '../factory/ItemFactory';
 import { createOption } from '../factory/OptionFactory';
 import { createShipping } from '../factory/ShippingFactory';
-import { createWish } from 'src/factory/WishFactory';
-import { createUser } from 'src/factory/UserFactory';
+import { createWish } from '../factory/WishFactory';
+import { createUser } from '../factory/UserFactory';
 import { signJWTForAuth } from './signJWT';
 import { generateHash } from './encryptions';
 
