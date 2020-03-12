@@ -10,9 +10,9 @@ import {
 } from './dependency';
 
 export interface GetItemsReq extends Item_Dependency {
-  q: string;
-  offset: string;
-  limit: string;
+  q?: string;
+  offset?: string;
+  limit?: string;
 }
 
 export interface ItemForm_Option extends Option_Dependency {
