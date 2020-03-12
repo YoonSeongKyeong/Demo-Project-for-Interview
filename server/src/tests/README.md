@@ -86,9 +86,13 @@ npm run typeorm migration:generate -- -n <Migration 파일 이름>
 
 ### **purchaseItems**
 ```javascript
-  *branch
-    *nestedBranch
-  *branch
+  *로그인이 안된 상황
+  *로그인이 된 상황
+    *invalid한 유저(ex: 삭제된 경우 status를 404로 만들어서 기록을 보존한다. 현재 User Entity에 status 구현 x)// !ISSUE 유저 삭제 정책을 기획해야 한다.
+    *valid한 유저
+      *충전금이 부족한 경우
+      *제출한 Item Form이 유효하지 않은 경우
+      *Transaction시 충돌로 인해 결제가 실패한 경우(ex: 두 transaction이 동시에 같은 item의 재고 전부 구매를 시도하는 경우. 현재 Service 및 Controller에 명시적 에러 처리 x)
 ```
 <hr>
 
