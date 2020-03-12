@@ -18,11 +18,28 @@ export async function getMyCart(request: Request, response: Response): Promise<v
   const wishService = new WishService();
   const itemService = new ItemService();
 
-  let goods: ItemForm[];
+  let goods: ItemForm[] = [];
+  let isWishInCookie = true;
+  let itemIdList: number[] = [];
   try {
+    // 쿠키의 장바구니 정보 확인
     const wish = (await extractJWT('wish', request)) as TokenForWish;
-    const { itemIdList } = wish;
+    itemIdList = wish.itemIdList;
+  } catch (error) {
+    if (
+      error.message === 'Invalid Token Name [wish]' ||
+      error.message === 'cannot find token in cookie [wish]'
+    ) {
+      // 장바구니 정보가 없는 경우 빈 배열을 사용한다.
+      isWishInCookie = false;
+    } else {
+      console.log('ERROR: ' + error.message);
+      response.status(500).send(error.message);
+      return;
+    }
+  } finally {
     try {
+      // 로그인 정보 확인
       const auth = (await extractJWT('auth', request)) as TokenForAuth;
       const { id } = auth;
 
@@ -56,26 +73,17 @@ export async function getMyCart(request: Request, response: Response): Promise<v
         console.log('ERROR: ' + error.message);
         response.status(500).send(error.message);
       }
-    }
-  } catch (error) {
-    if (
-      error.message === 'Invalid Token Name [wish]' ||
-      error.message === 'cannot find token in cookie [wish]'
-    ) {
-      // 장바구니 정보가 없는 경우 새로 만들어준다.
-      goods = [];
-      const itemIdList: string[] = [];
-      response.cookie('wish', signJWT({ itemIdList }), {
-        expires: new Date(Date.now() + 900000000000),
-        httpOnly: true,
-        domain: configs.CLIENT_DOMAIN,
-        path: '/',
-      });
-      resBody = { goods };
-      response.status(200).json(resBody);
-    } else {
-      console.log('ERROR: ' + error.message);
-      response.status(500).send(error.message);
+    } finally {
+      if (!isWishInCookie) {
+        response.cookie('wish', signJWT({ itemIdList }), {
+          expires: new Date(Date.now() + 900000000000),
+          httpOnly: true,
+          domain: configs.CLIENT_DOMAIN,
+          path: '/',
+        });
+        resBody = { goods };
+        response.status(200).json(resBody);
+      }
     }
   }
 }

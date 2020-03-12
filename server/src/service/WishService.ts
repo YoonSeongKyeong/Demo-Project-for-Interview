@@ -39,6 +39,10 @@ export class WishService {
     itemIdList,
     userId,
   }: WishService_AddItemIdListOfUserInput): Promise<WishService_AddItemIdListOfUserOutput> => {
+    if (itemIdList.length === 0) {
+      // 만약 itemIdList가 비어있다면 추가 작업이 필요 없으므로 바로 return한다.
+      return;
+    }
     const [getItemIdObj, getUserById] = await Promise.all([
       await this.wishRepository // 유저 장바구니에 등록된 싱픔 Id 리스트 와 유저 객체를 가져온다.
         .createQueryBuilder('wish')
@@ -91,6 +95,10 @@ export class WishService {
   }: WishService_DeleteItemIdListOfUserInput): Promise<
     WishService_DeleteItemIdListOfUserOutput
   > => {
+    if (itemIdList.length === 0) {
+      // 만약 itemIdList가 비어있다면 제거 작업이 필요 없으므로 바로 return한다.
+      return;
+    }
     await this.wishRepository
       .createQueryBuilder()
       .delete()

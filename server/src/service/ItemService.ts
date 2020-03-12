@@ -60,7 +60,7 @@ export class ItemService {
       offset = 0;
     }
     let limit = parseInt(criteria.limit);
-    if (!limit) {
+    if (!limit || limit <= 0) {
       limit = 20; // default items/page
     }
     const getItems = await this.itemRepository.find({
@@ -75,6 +75,10 @@ export class ItemService {
   getItemFormListByItemIdList = async (
     itemIdList: ItemService_GetItemFormListByItemIdListInput,
   ): Promise<ItemService_GetItemFormListByItemIdListOutput> => {
+    if (itemIdList.length === 0) {
+      // 만약 itemIdList가 비어있다면 바로 빈 배열을 return한다.
+      return [];
+    }
     const getItems = await this.itemRepository.find({
       relations: ['provider', 'options', 'shipping'],
       where: itemIdList.map(id => ({ id })),
