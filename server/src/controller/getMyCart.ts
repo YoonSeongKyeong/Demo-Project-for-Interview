@@ -19,7 +19,6 @@ export async function getMyCart(request: Request, response: Response): Promise<v
   const itemService = new ItemService();
 
   let goods: ItemForm[] = [];
-  let isWishInCookie = true;
   let itemIdList: number[] = [];
   try {
     // 쿠키의 장바구니 정보 확인
@@ -31,7 +30,6 @@ export async function getMyCart(request: Request, response: Response): Promise<v
       error.message === 'cannot find token in cookie [wish]'
     ) {
       // 장바구니 정보가 없는 경우 빈 배열을 사용한다.
-      isWishInCookie = false;
     } else {
       console.log('ERROR: ' + error.message);
       response.status(500).send(error.message);
@@ -45,12 +43,10 @@ export async function getMyCart(request: Request, response: Response): Promise<v
 
       if (id && (await userService.isValidUser(id))) {
         // 만약 로그인이 된 상황이라면 자신의 Wish에 장바구니 토큰의 목록을 동기화한 후 Wish목록의 상품들을 가져온다.
-        await wishService.addItemIdListOfUser({ itemIdList, userId: id });
+        itemIdList = await wishService.addItemIdListOfUser({ itemIdList, userId: id }); // valid한 상품의 itemIdList를 return한다.
         goods = await itemService.getItemFormListByItemIdList(
           await wishService.getItemIdListOfUser({ userId: id }),
         );
-        resBody = { goods };
-        response.status(200).json(resBody);
       } else {
         throw new Error('Invalid User Id');
       }
@@ -67,23 +63,21 @@ export async function getMyCart(request: Request, response: Response): Promise<v
         }
         // 기본적으로 장바구니 토큰을 가지고 상품을 가져온다.
         goods = await itemService.getItemFormListByItemIdList(itemIdList);
-        resBody = { goods };
-        response.status(200).json(resBody);
       } else {
         console.log('ERROR: ' + error.message);
         response.status(500).send(error.message);
+        return;
       }
     } finally {
-      if (!isWishInCookie) {
-        response.cookie('wish', signJWT({ itemIdList }), {
-          expires: new Date(Date.now() + 900000000000),
-          httpOnly: true,
-          domain: configs.CLIENT_DOMAIN,
-          path: '/',
-        });
-        resBody = { goods };
-        response.status(200).json(resBody);
-      }
+      response.cookie('wish', signJWT({ itemIdList }), {
+        // 쿠키의 장바구니를 업데이트한다.
+        expires: new Date(Date.now() + 900000000000),
+        httpOnly: true,
+        domain: configs.CLIENT_DOMAIN,
+        path: '/',
+      });
+      resBody = { goods };
+      response.status(200).json(resBody);
     }
   }
 }

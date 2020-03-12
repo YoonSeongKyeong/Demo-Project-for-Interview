@@ -41,7 +41,7 @@ export class WishService {
   }: WishService_AddItemIdListOfUserInput): Promise<WishService_AddItemIdListOfUserOutput> => {
     if (itemIdList.length === 0) {
       // 만약 itemIdList가 비어있다면 추가 작업이 필요 없으므로 바로 return한다.
-      return;
+      return [];
     }
     const [getItemIdObj, getUserById] = await Promise.all([
       await this.wishRepository // 유저 장바구니에 등록된 싱픔 Id 리스트 와 유저 객체를 가져온다.
@@ -69,14 +69,14 @@ export class WishService {
         itemIdListToAdd.map(itemId =>
           this.itemRepository.findOne({ id: itemId }).then(item => {
             if (!item) {
-              throw new Error('Invalid Item Id');
+              return null; // 유효하지 않은 Item의 Id를 제거한다.
             }
             return item;
           }),
         ),
-      );
+      ).then(items => items.filter(item => item !== null) as Item[]);
     } catch (error) {
-      throw new Error('Invalid Item Id');
+      throw error;
     }
     await Promise.all(
       // User와 Item을 연결하는 Wish를 생성한다.
@@ -88,6 +88,7 @@ export class WishService {
         return this.wishRepository.save(newWish);
       }),
     );
+    return getListOfItemsToAdd.map(item => item.id); // 유효한 상품들의 itemIdList를 다시 전송한다.
   };
   deleteItemIdListOfUser = async ({
     itemIdList,
