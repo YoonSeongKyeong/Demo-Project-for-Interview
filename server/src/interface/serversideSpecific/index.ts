@@ -62,8 +62,8 @@ export interface CreateItemEntity extends Item_Dependency {
   titleImage: string; // 상품 대표 이미지
   price: number; // 상품 가격
   provider: Provider;
-  shippings: Shipping[];
-  options: Option[];
+  shipping?: Shipping;
+  options?: Option[];
   purchasedList?: Purchased[];
   wishList?: Wish[];
 }
@@ -72,7 +72,7 @@ export interface UpdateItemEntity extends Item_Dependency {
   titleImage?: string; // 상품 대표 이미지
   price?: number; // 상품 가격
   provider?: Provider;
-  shippings?: Shipping[];
+  shipping?: Shipping;
   options?: Option[];
   purchasedList?: Purchased[];
   wishList?: Wish[];
@@ -274,3 +274,7 @@ export type TestFeature = {
   Wish: TestFeature_Wish[];
   Purchased: TestFeature_Purchased[];
 };
+
+export type TestSetUp_ProviderObj = { [provider: string]: Provider };
+
+export type TestSetUp_ItemObj = { [item: string]: Item };
