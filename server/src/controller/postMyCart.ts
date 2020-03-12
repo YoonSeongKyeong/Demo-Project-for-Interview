@@ -11,11 +11,9 @@ import { signJWT } from '../utils/signJWT';
 
 export async function postMyCart(request: Request, response: Response): Promise<void> {
   debugger;
-  let reqBody: PostMyCartReq;
+  const reqBody: PostMyCartReq = { itemIdList: request.body.itemIdList };
   let resBody: PostMyCartRes;
 
-  // eslint-disable-next-line prefer-const
-  reqBody = { itemIdList: request.body.itemIdList };
   let itemIdList: ItemIdList = [];
   try {
     // 쿠키의 장바구니 정보 확인
@@ -33,15 +31,14 @@ export async function postMyCart(request: Request, response: Response): Promise<
       return;
     }
   } finally {
+    // itemIdList에 추가 요청된 itemIdList를 merge한다.
+    reqBody.itemIdList.forEach(id => {
+      // 현재는 장바구니에 추가하는 상품 수가 별로 없어서 O(N^2) 알고리즘을 쓰지만, 만약 scalability가 필요하다면, 오름차순을 유지하며 binarysearch로 O(NlgN)만에 처리할 수 있다. or 두 배열을 병합한 뒤 sort하고 중복된 것을 제외하고 넣어도 O(NlgN)
+      if (!itemIdList.includes(id)) {
+        itemIdList.push(id);
+      }
+    });
     try {
-      // itemIdList에 추가 요청된 itemIdList를 merge한다.
-      reqBody.itemIdList.forEach(id => {
-        // 현재는 장바구니에 추가하는 상품 수가 별로 없어서 O(N^2) 알고리즘을 쓰지만, 만약 scalability가 필요하다면, 오름차순을 유지하며 binarysearch로 O(NlgN)만에 처리할 수 있다. or 두 배열을 병합한 뒤 sort하고 중복된 것을 제외하고 넣어도 O(NlgN)
-        if (!itemIdList.includes(id)) {
-          itemIdList.push(id);
-        }
-      });
-
       // 로그인 정보를 받아온다.
       const auth = (await extractJWT('auth', request)) as TokenForAuth;
       const { id } = auth;
@@ -50,7 +47,7 @@ export async function postMyCart(request: Request, response: Response): Promise<
       const wishService = new WishService();
 
       if (id && (await userService.isValidUser(id))) {
-        // 만약 로그인이 된 상황이라면 자신의 Wish에 상품들을 추가한다.
+        // 로그인이 된 상황이라면 자신의 Wish에 상품들을 추가한다.
         itemIdList = await wishService.addItemIdListOfUserReturnsValidOne({
           itemIdList,
           userId: id,
