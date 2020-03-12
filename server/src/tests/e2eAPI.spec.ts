@@ -9,6 +9,7 @@ import { setConfigure, configs } from '../utils/configs';
 import { CreateServer } from '../interface/serversideSpecific';
 import { prepareTestData } from '../utils/prepareTestData';
 import { isConformToInterface } from '../utils/isConformToInterface';
+import { GetItemsReq, GetItemsRes } from '../interface/api';
 
 // declare server core variables
 let app: Application;
@@ -61,40 +62,107 @@ describe('Integration API Test: ', () => {
   // Test cases
   // -------------------------------------------------------------------------
 
-  describe('Test client-API', () => {
-    // describe('API NAME', () => {
-    //   it('descriptive test name', async () => {
-    //     const reqBody = {};
-    //     const resBody = {};
-    //     return await request(app)
-    //       .post('/api/items')
-    //       .set('Content-Type', 'application/json')
-    //       .send(reqBody)
-    //       .expect(200)
-    //       .expect('Content-Type', 'application/json; charset=utf-8')
-    //       .expect(resBody);
-    //   });
-    // });
-    // describe('API NAME', () => {
-    //   it('descriptive test name', async () => {
-    //     //   const reqBody = {};
-    //     //   return await request(app)
-    //     //     .get('/api/~~~')
-    //     //     .query({ reqBody: JSON.stringify(reqBody) })
-    //     //     .set('Content-Type', 'application/json')
-    //     //     .set('Cookie', `token=${'user-jwt'}`)
-    //     //     .send()
-    //     //     .expect(404)
-    //     //     .then(async res => {
-    //     //       // parse cookie
-    //     //       const parseCookie = res.header['set-cookie'][0]
-    //     //         .split(',')
-    //     //         .map((item: string) => item.split(';')[0]);
-    //     //       const [key] = parseCookie[0].split('=');
-    //     //       const expiration = new Date(parseCookie[1]).getTime();
-    //     //       expect(expiration).toBeLessThan(Date.now()); // cleared
-    //     //       expect(key).toEqual('token');
-    //     //     });
-    //   });
+  describe('GetItems', () => {
+    it('GET all named items without specific query', async () => {
+      // const reqBody: GetItemsReq = {};
+      // const resBody: GetItemsRes = { goods: [] };
+      // return await request(app)
+      //   .get('/api/items')
+      //   .set('Content-Type', 'application/json')
+      //   .query(reqBody)
+      //   .send()
+      //   .expect(200)
+      //   .expect('Content-Type', 'application/json; charset=utf-8')
+      //   .expect(resBody);
+      expect(true).toBeTruthy();
+    });
+  });
+  xdescribe('GetMyCarts', () => {
+    it('descriptive test name', async () => {
+      //   const reqBody = {};
+      //   return await request(app)
+      //     .get('/api/~~~')
+      //     .query({ reqBody: JSON.stringify(reqBody) })
+      //     .set('Content-Type', 'application/json')
+      //     .set('Cookie', `token=${'user-jwt'}`)
+      //     .send()
+      //     .expect(404)
+      //     .then(async res => {
+      //       // parse cookie
+      //       const parseCookie = res.header['set-cookie'][0]
+      //         .split(',')
+      //         .map((item: string) => item.split(';')[0]);
+      //       const [key] = parseCookie[0].split('=');
+      //       const expiration = new Date(parseCookie[1]).getTime();
+      //       expect(expiration).toBeLessThan(Date.now()); // cleared
+      //       expect(key).toEqual('token');
+      //     });
+    });
+  });
+  xdescribe('PostMyCarts', () => {
+    it('descriptive test name', async () => {
+      //   const reqBody = {};
+      //   return await request(app)
+      //     .get('/api/~~~')
+      //     .query({ reqBody: JSON.stringify(reqBody) })
+      //     .set('Content-Type', 'application/json')
+      //     .set('Cookie', `token=${'user-jwt'}`)
+      //     .send()
+      //     .expect(404)
+      //     .then(async res => {
+      //       // parse cookie
+      //       const parseCookie = res.header['set-cookie'][0]
+      //         .split(',')
+      //         .map((item: string) => item.split(';')[0]);
+      //       const [key] = parseCookie[0].split('=');
+      //       const expiration = new Date(parseCookie[1]).getTime();
+      //       expect(expiration).toBeLessThan(Date.now()); // cleared
+      //       expect(key).toEqual('token');
+      //     });
+    });
+  });
+  xdescribe('PurchaseItems', () => {
+    it('descriptive test name', async () => {
+      //   const reqBody = {};
+      //   return await request(app)
+      //     .get('/api/~~~')
+      //     .query({ reqBody: JSON.stringify(reqBody) })
+      //     .set('Content-Type', 'application/json')
+      //     .set('Cookie', `token=${'user-jwt'}`)
+      //     .send()
+      //     .expect(404)
+      //     .then(async res => {
+      //       // parse cookie
+      //       const parseCookie = res.header['set-cookie'][0]
+      //         .split(',')
+      //         .map((item: string) => item.split(';')[0]);
+      //       const [key] = parseCookie[0].split('=');
+      //       const expiration = new Date(parseCookie[1]).getTime();
+      //       expect(expiration).toBeLessThan(Date.now()); // cleared
+      //       expect(key).toEqual('token');
+      //     });
+    });
+  });
+  xdescribe('DeleteMyCarts', () => {
+    it('descriptive test name', async () => {
+      //   const reqBody = {};
+      //   return await request(app)
+      //     .get('/api/~~~')
+      //     .query({ reqBody: JSON.stringify(reqBody) })
+      //     .set('Content-Type', 'application/json')
+      //     .set('Cookie', `token=${'user-jwt'}`)
+      //     .send()
+      //     .expect(404)
+      //     .then(async res => {
+      //       // parse cookie
+      //       const parseCookie = res.header['set-cookie'][0]
+      //         .split(',')
+      //         .map((item: string) => item.split(';')[0]);
+      //       const [key] = parseCookie[0].split('=');
+      //       const expiration = new Date(parseCookie[1]).getTime();
+      //       expect(expiration).toBeLessThan(Date.now()); // cleared
+      //       expect(key).toEqual('token');
+      //     });
+    });
   });
 });
