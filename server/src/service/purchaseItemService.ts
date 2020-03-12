@@ -3,15 +3,15 @@ import { getRepository, getConnection, Repository } from 'typeorm';
 import { Purchased } from '../entity/Purchased';
 import { User } from '../entity/User';
 import { Item } from '../entity/Item';
+import { Option } from '../entity/Option';
+import { ItemForm } from '../interface/api';
 import {
   PurchaseItemService_PurchaseByItemFormListAndUserIdOutput,
   PurchaseItemService_PurchaseByItemFormListAndUserIdInput,
   CreatePurchasedEntity,
 } from '../interface/serversideSpecific';
-import { getTotalPriceByItemFormList } from 'src/utils/getTotalPrice';
-import { ItemForm } from '../interface/api';
-import { validateItemFormToItem } from 'src/utils/validateItemFormToItem';
-import { Option } from 'src/entity/Option';
+import { getTotalPriceByItemFormList } from '../utils/getTotalPrice';
+import { validateItemFormToItem } from '../utils/validateItemFormToItem';
 
 export class PurchaseItemService {
   purchasedRepository: Repository<Purchased>;
@@ -41,6 +41,7 @@ export class PurchaseItemService {
 
     // 중간에 item의 가격 및 shipping 옵션이 바뀌는 경우에 totalPrice가 invalid할 수 있다. 이 경우엔 상품 구매를 취소할지, 아니면 새로 바뀐 상품 가격으로 진행할지, 예전 상품 가격으로 결제를 진행하며 상품 가격 변경 시 판매자에게 양해를 부탁할지 결정해야 한다.
     await getConnection().transaction('READ COMMITTED', async transactionalEntityManager => {
+      // READ COMMITTED 이상의 Isolation Level 필요
       const user = await transactionalEntityManager.findOne(User, { id: userId });
       if (!user) {
         throw new Error('Invalid User Id');
