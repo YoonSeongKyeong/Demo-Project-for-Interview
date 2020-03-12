@@ -55,11 +55,11 @@ export class ItemService {
     if (!query) {
       query = '';
     }
-    let offset = parseInt(criteria.offset);
+    let offset = !!criteria.offset ? parseInt(criteria.offset) : false;
     if (!offset) {
       offset = 0;
     }
-    let limit = parseInt(criteria.limit);
+    let limit = !!criteria.limit ? parseInt(criteria.limit) : false;
     if (!limit || limit <= 0) {
       limit = 20; // default items/page
     }
