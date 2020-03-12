@@ -4,7 +4,7 @@ import { TokenForAuth } from '../interface/serversideSpecific';
 import { PurchaseItemService } from '../service/purchaseItemService';
 import { UserService } from '../service/UserService';
 import { extractJWT } from '../utils/extractJWT';
-import { configs } from 'src/utils/configs';
+import { configs } from '../utils/configs';
 
 // 상품들을 구매
 
