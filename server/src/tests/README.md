@@ -5,6 +5,7 @@
 ## **Test Migration Update Routine**
 
  ### **테스트 시 매번 일관된 Test Data를 사용해서 테스트를 진행할 수 있도록 Schema Creation 과정을 tests/migration에 저장해두고 beforeEach에서 dropDB와 runMigration을 반복한다. 이 때 사용하는 migration을 갱신하는 방법을 소개한다.**
+- ### **yarn build를 실행시켜서 먼저 dist 폴더에 TypeORM 파일을 컴파일한다. (소스로 사용할 대상)**
 - ### **미리 src/tests/migration 폴더를 비운다.**
 - ### **config/env/.env (Create Schema => Migration File 용 환경설정)의 TYPEORM_DATABASE에 있는 DB를 어떤 Table도 없는 Empty Schema 상태로 만들어준다.**
 - ### **CLI 창을 연 후 프로젝트 폴더 위치에서 다음 명령어를 실행한다.**
