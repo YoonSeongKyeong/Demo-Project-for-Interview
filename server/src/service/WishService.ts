@@ -4,11 +4,11 @@ import { Wish } from '../entity/Wish';
 import {
   WishService_GetItemIdListOfUserOutput,
   WishService_GetItemIdListOfUserInput,
-  WishService_AddItemIdListOfUserInput,
-  WishService_AddItemIdListOfUserOutput,
   CreateWishEntity,
   WishService_DeleteItemIdListOfUserInput,
   WishService_DeleteItemIdListOfUserOutput,
+  WishService_AddItemIdListOfUserReturnsValidOneInput,
+  WishService_AddItemIdListOfUserReturnsValidOneOutput,
 } from '../interface/serversideSpecific';
 import { User } from '../entity/User';
 import { Item } from '../entity/Item';
@@ -35,10 +35,12 @@ export class WishService {
     return getItemIdObj.map(idObj => idObj.id);
   };
 
-  addItemIdListOfUser = async ({
+  addItemIdListOfUserReturnsValidOne = async ({
     itemIdList,
     userId,
-  }: WishService_AddItemIdListOfUserInput): Promise<WishService_AddItemIdListOfUserOutput> => {
+  }: WishService_AddItemIdListOfUserReturnsValidOneInput): Promise<
+    WishService_AddItemIdListOfUserReturnsValidOneOutput
+  > => {
     if (itemIdList.length === 0) {
       // 만약 itemIdList가 비어있다면 추가 작업이 필요 없으므로 바로 return한다.
       return [];

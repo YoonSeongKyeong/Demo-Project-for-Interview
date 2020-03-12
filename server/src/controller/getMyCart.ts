@@ -3,7 +3,7 @@ import { GetMyCartRes, ItemForm } from '../interface/api';
 import { UserService } from '../service/UserService';
 import { ItemService } from '../service/ItemService';
 import { WishService } from '../service/WishService';
-import { TokenForAuth, TokenForWish } from 'src/interface/serversideSpecific';
+import { TokenForAuth, TokenForWish, ItemIdList } from 'src/interface/serversideSpecific';
 import { configs } from '../utils/configs';
 import { extractJWT } from '../utils/extractJWT';
 import { signJWT } from '../utils/signJWT';
@@ -19,7 +19,7 @@ export async function getMyCart(request: Request, response: Response): Promise<v
   const itemService = new ItemService();
 
   let goods: ItemForm[] = [];
-  let itemIdList: number[] = [];
+  let itemIdList: ItemIdList = [];
   try {
     // 쿠키의 장바구니 정보 확인
     const wish = (await extractJWT('wish', request)) as TokenForWish;
@@ -43,7 +43,10 @@ export async function getMyCart(request: Request, response: Response): Promise<v
 
       if (id && (await userService.isValidUser(id))) {
         // 만약 로그인이 된 상황이라면 자신의 Wish에 장바구니 토큰의 목록을 동기화한 후 Wish목록의 상품들을 가져온다.
-        itemIdList = await wishService.addItemIdListOfUser({ itemIdList, userId: id }); // valid한 상품의 itemIdList를 return한다.
+        itemIdList = await wishService.addItemIdListOfUserReturnsValidOne({
+          itemIdList,
+          userId: id,
+        }); // valid한 상품의 itemIdList를 return한다. local장바구니->유저 wish DB 는 가능하지만, 유저 wish DB -> local장바구니 불가능 (보안 및 사생활 보호)
         goods = await itemService.getItemFormListByItemIdList(
           await wishService.getItemIdListOfUser({ userId: id }),
         );
@@ -69,8 +72,8 @@ export async function getMyCart(request: Request, response: Response): Promise<v
         return;
       }
     } finally {
+      // 쿠키의 장바구니를 업데이트한다.
       response.cookie('wish', signJWT({ itemIdList }), {
-        // 쿠키의 장바구니를 업데이트한다.
         expires: new Date(Date.now() + 900000000000),
         httpOnly: true,
         domain: configs.CLIENT_DOMAIN,
