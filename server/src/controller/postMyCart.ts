@@ -5,7 +5,7 @@ import { UserService } from '../service/UserService';
 import { WishService } from '../service/WishService';
 import { configs } from '../utils/configs';
 import { extractJWT } from '../utils/extractJWT';
-import { signJWT } from '../utils/signJWT';
+import { signJWTForWish } from '../utils/signJWT';
 
 // 장바구니 추가
 
@@ -73,7 +73,7 @@ export async function postMyCart(request: Request, response: Response): Promise<
       }
     } finally {
       // 쿠키의 장바구니를 업데이트한다.
-      response.cookie('wish', signJWT({ itemIdList: reqBody.itemIdList }), {
+      response.cookie('wish', signJWTForWish({ itemIdList: reqBody.itemIdList }), {
         expires: new Date(Date.now() + 900000000000),
         httpOnly: true,
         domain: configs.CLIENT_DOMAIN,
