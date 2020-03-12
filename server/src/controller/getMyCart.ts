@@ -42,7 +42,7 @@ export async function getMyCart(request: Request, response: Response): Promise<v
       const { id } = auth;
 
       if (id && (await userService.isValidUser(id))) {
-        // 만약 로그인이 된 상황이라면 자신의 Wish에 장바구니 토큰의 목록을 동기화한 후 Wish목록의 상품들을 가져온다.
+        // 로그인이 된 상황이라면 자신의 Wish에 장바구니 토큰의 목록을 동기화한 후 Wish목록의 상품들을 가져온다.
         itemIdList = await wishService.addItemIdListOfUserReturnsValidOne({
           itemIdList,
           userId: id,
@@ -64,7 +64,7 @@ export async function getMyCart(request: Request, response: Response): Promise<v
           // id가 유효하지 않은 경우, Clear Cookie
           response.clearCookie('auth', { domain: configs.CLIENT_DOMAIN, path: '/' });
         }
-        // 기본적으로 장바구니 토큰을 가지고 상품을 가져온다.
+        // 장바구니 토큰만을 가지고 상품을 가져온다.
         goods = await itemService.getItemFormListByItemIdList(itemIdList);
       } else {
         console.log('ERROR: ' + error.message);
