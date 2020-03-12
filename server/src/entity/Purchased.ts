@@ -1,9 +1,12 @@
-import { Entity, Column, CreateDateColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, CreateDateColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from './User';
 import { Item } from './Item';
 
 @Entity()
 export class Purchased {
+  @PrimaryGeneratedColumn()
+  id: number;
+
   @CreateDateColumn()
   purchasedAt: Date; // 구매한 시각
 
