@@ -280,3 +280,7 @@ export type TestSetUp_ProviderObj = { [provider: string]: Provider };
 export type TestSetUp_ItemObj = { [item: string]: Item };
 
 export type TestSetUp_UserObj = { [user: string]: User };
+
+export type TestSetUp_UserAuthObj = { [user: string]: { user: User; auth: string } };
+
+export type TestSetUp_PrepareTestDataOutput = { userAuthObj: TestSetUp_UserAuthObj };
