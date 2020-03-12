@@ -136,7 +136,7 @@ export interface CreateUserEntity extends User_Dependency {
   name: string; // 유저 이름
   password: string; // 유저 비밀번호
   cash?: number; // 유저 충전금
-  email: number; // 유저 로그인 이메일
+  email: string; // 유저 로그인 이메일
   purchasedList?: Purchased[];
   wishList?: Wish[];
 }
@@ -145,7 +145,7 @@ export interface UpdateUserEntity extends User_Dependency {
   name?: string; // 유저 이름
   password?: string; // 유저 비밀번호
   cash?: number; // 유저 충전금
-  email?: number; // 유저 로그인 이메일
+  email?: string; // 유저 로그인 이메일
   purchasedList?: Purchased[];
   wishList?: Wish[];
 }
@@ -233,7 +233,7 @@ export interface TestFeature_Item extends Item_Dependency {
 
 export interface TestFeature_User extends User_Dependency {
   name: string;
-  password: number;
+  password: string;
   cash: number;
   email: string;
 }
@@ -278,3 +278,5 @@ export type TestFeature = {
 export type TestSetUp_ProviderObj = { [provider: string]: Provider };
 
 export type TestSetUp_ItemObj = { [item: string]: Item };
+
+export type TestSetUp_UserObj = { [user: string]: User };
