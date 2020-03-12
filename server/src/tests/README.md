@@ -20,7 +20,53 @@ npm run typeorm migration:generate -- -n <Migration 파일 이름>
 
 <hr>
 
-### **API 이름**
+### **getItems**
+```javascript
+  *검색어가 없는 경우 (default === '')
+  *검색어가 있는 경우
+  *offset이 없는경우 (default === 0)
+  *offset이 있는 경우 
+    *pagination test
+    *offset이 커서 찾은 상품이 없는 경우
+  *limit이 없는경우 (default === 20)
+  *limit이 있는 경우
+    *limit이 상품 총 갯수보다 큰 경우
+    *limit이 invalid한 경우 (0 이하)
+```
+<hr>
+
+### **getMyCart**
+```javascript
+  *로그인이 된 상황
+    *wish 쿠키가 없는 경우
+      *valid한 유저
+      *invalid한 유저(ex: 삭제된 경우 status를 404로 만들어서 기록을 보존한다. 현재 User Entity에 status 구현 x)// !ISSUE 유저 삭제 정책을 기획해야 한다.
+    *wish 쿠키가 있는 경우
+      *valid한 유저
+      *invalid한 유저(ex: 삭제된 경우 status를 404로 만들어서 기록을 보존한다. 현재 User Entity에 status 구현 x)// !ISSUE 유저 삭제 정책을 기획해야 한다.
+  *로그인이 안된 상황
+    *wish 쿠키가 없는 경우
+    *wish 쿠키가 있는 경우
+```
+<hr>
+
+### **postMyCart**
+```javascript
+  *branch
+    *nestedBranch
+  *branch
+```
+<hr>
+
+### **deleteMyCart**
+```javascript
+  *branch
+    *nestedBranch
+  *branch
+```
+<hr>
+
+### **purchaseItems**
 ```javascript
   *branch
     *nestedBranch
