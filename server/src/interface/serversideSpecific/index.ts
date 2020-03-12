@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable @typescript-eslint/class-name-casing */
 import { Connection } from 'typeorm';
 import { Application } from 'express';
 import * as http from 'http';
@@ -202,3 +203,74 @@ export type PurchaseItemService_PurchaseByItemFormListAndUserIdOutput = Purchase
 export type ValidateItemFormToItemInput = { itemForm: ItemForm; item: Item };
 
 export type ValidateItemFormToItemOutput = boolean;
+
+export interface TestFeature_Provider extends Provider_Dependency {
+  name: string;
+}
+
+export interface TestFeature_ItemFeature extends Item_Dependency {
+  name: string;
+  price: number;
+}
+
+export interface TestFeature_Option extends Option_Dependency {
+  color: string;
+  size: string;
+  stock: number;
+}
+
+export interface TestFeature_Shipping extends Shipping_Dependency {
+  method: string;
+  price: number;
+  canBundle: boolean;
+}
+
+export interface TestFeature_Item extends Item_Dependency {
+  itemFeature: TestFeature_ItemFeature;
+  options: TestFeature_Option[];
+  shipping: TestFeature_Shipping;
+}
+
+export interface TestFeature_User extends User_Dependency {
+  name: string;
+  password: number;
+  cash: number;
+  email: string;
+}
+
+export interface TestFeature_Wish extends Wish_Dependency {
+  itemInfo: {
+    itemName: string;
+  };
+  userInfo: {
+    email: string;
+  };
+}
+
+export interface TestFeature_PurchasedFeature extends Purchased_Dependency {
+  status: string;
+  optionLog: string;
+  shippingLog: string;
+  sellerId: number;
+}
+
+export interface TestFeature_Purchased extends Purchased_Dependency {
+  itemInfo: {
+    itemName: string;
+  };
+  userInfo: {
+    email: string;
+  };
+  purchasedFeature: TestFeature_PurchasedFeature;
+}
+
+export type TestFeature = {
+  Provider: TestFeature_Provider[];
+  Item: {
+    providerName: string;
+    items: TestFeature_Item[];
+  }[];
+  User: TestFeature_User[];
+  Wish: TestFeature_Wish[];
+  Purchased: TestFeature_Purchased[];
+};
