@@ -63,7 +63,7 @@ describe('Integration API Test: ', () => {
   // -------------------------------------------------------------------------
 
   describe('GetItems', () => {
-    it('GET all named items without specific query', async () => {
+    it('GET all named items without specified query', async () => {
       const reqBody: GetItemsReq = {};
       const resBody: GetItemsRes = {
         goods: [
@@ -162,7 +162,7 @@ describe('Integration API Test: ', () => {
             });
         });
     });
-    it('GET items with specific offset = 1, which is not equal to items with offset = 2', async () => {
+    it('GET items with specified offset = 1, which is not equal to items with offset = 2', async () => {
       const offsetOne = '1';
       const offsetTwo = '2';
       const reqBody: GetItemsReq = { offset: offsetOne };
@@ -206,6 +206,229 @@ describe('Integration API Test: ', () => {
                 expect(itemListWithOffsetOne[i].id).not.toEqual(itemListWithOffsetTwo[i].id);
               }
             });
+        });
+    });
+    it('fails to GET items with too much offset', async () => {
+      const tooMuchOffset = '' + 999999;
+      const reqBody: GetItemsReq = { offset: tooMuchOffset };
+      const resBody: GetItemsRes = {
+        goods: [
+          {
+            id: 0,
+            name: '',
+            titleImage: '',
+            price: 0,
+            provider: '',
+            options: [],
+            shipping: { method: '', price: 0, canBundle: true },
+          },
+        ],
+      };
+      return await request(app)
+        .get('/api/items')
+        .set('Content-Type', 'application/json')
+        .query(reqBody)
+        .send()
+        .expect(200)
+        .expect('Content-Type', 'application/json; charset=utf-8')
+        .then(async res => {
+          expect(isConformToInterface(res.body, resBody)).toBeTruthy();
+          expect(res.body.goods).toEqual([]);
+        });
+    });
+    it('GET items with not specified default limit, which is equal to items with limit = 20 ', async () => {
+      const reqBody: GetItemsReq = {};
+      const resBody: GetItemsRes = {
+        goods: [
+          {
+            id: 0,
+            name: '',
+            titleImage: '',
+            price: 0,
+            provider: '',
+            options: [],
+            shipping: { method: '', price: 0, canBundle: true },
+          },
+        ],
+      };
+      return await request(app)
+        .get('/api/items')
+        .set('Content-Type', 'application/json')
+        .query(reqBody)
+        .send()
+        .expect(200)
+        .expect('Content-Type', 'application/json; charset=utf-8')
+        .then(async res => {
+          expect(isConformToInterface(res.body, resBody)).toBeTruthy();
+          expect(res.body.goods.length === 20).toBeTruthy();
+        });
+    });
+    it('GET items with specified random limit (lmiit < 30 & limit > 0)', async () => {
+      const randomLimit = Math.floor(Math.random() * 29) + 1;
+      const reqBody: GetItemsReq = { limit: '' + randomLimit };
+      const resBody: GetItemsRes = {
+        goods: [
+          {
+            id: 0,
+            name: '',
+            titleImage: '',
+            price: 0,
+            provider: '',
+            options: [],
+            shipping: { method: '', price: 0, canBundle: true },
+          },
+        ],
+      };
+      return await request(app)
+        .get('/api/items')
+        .set('Content-Type', 'application/json')
+        .query(reqBody)
+        .send()
+        .expect(200)
+        .expect('Content-Type', 'application/json; charset=utf-8')
+        .then(async res => {
+          expect(isConformToInterface(res.body, resBody)).toBeTruthy();
+          expect(res.body.goods.length === randomLimit).toBeTruthy();
+        });
+    });
+    it('GET all items with Too much lmiit ', async () => {
+      const tooMuchLimit = 9999999;
+      const reqBody: GetItemsReq = { limit: '' + tooMuchLimit };
+      const resBody: GetItemsRes = {
+        goods: [
+          {
+            id: 0,
+            name: '',
+            titleImage: '',
+            price: 0,
+            provider: '',
+            options: [],
+            shipping: { method: '', price: 0, canBundle: true },
+          },
+        ],
+      };
+      return await request(app)
+        .get('/api/items')
+        .set('Content-Type', 'application/json')
+        .query(reqBody)
+        .send()
+        .expect(200)
+        .expect('Content-Type', 'application/json; charset=utf-8')
+        .then(async res => {
+          expect(isConformToInterface(res.body, resBody)).toBeTruthy();
+          expect(res.body.goods.length < tooMuchLimit).toBeTruthy();
+        });
+    });
+    it('GET items with default = 20 when specified limit is invalid : limit = EmptyString', async () => {
+      const invalidLimit = '';
+      const reqBody: GetItemsReq = { limit: '' + invalidLimit };
+      const resBody: GetItemsRes = {
+        goods: [
+          {
+            id: 0,
+            name: '',
+            titleImage: '',
+            price: 0,
+            provider: '',
+            options: [],
+            shipping: { method: '', price: 0, canBundle: true },
+          },
+        ],
+      };
+      return await request(app)
+        .get('/api/items')
+        .set('Content-Type', 'application/json')
+        .query(reqBody)
+        .send()
+        .expect(200)
+        .expect('Content-Type', 'application/json; charset=utf-8')
+        .then(async res => {
+          expect(isConformToInterface(res.body, resBody)).toBeTruthy();
+          expect(res.body.goods.length === 20).toBeTruthy();
+        });
+    });
+    it('GET items with default = 20 when specified limit is invalid : limit = string', async () => {
+      const invalidLimit = 'Hello World';
+      const reqBody: GetItemsReq = { limit: '' + invalidLimit };
+      const resBody: GetItemsRes = {
+        goods: [
+          {
+            id: 0,
+            name: '',
+            titleImage: '',
+            price: 0,
+            provider: '',
+            options: [],
+            shipping: { method: '', price: 0, canBundle: true },
+          },
+        ],
+      };
+      return await request(app)
+        .get('/api/items')
+        .set('Content-Type', 'application/json')
+        .query(reqBody)
+        .send()
+        .expect(200)
+        .expect('Content-Type', 'application/json; charset=utf-8')
+        .then(async res => {
+          expect(isConformToInterface(res.body, resBody)).toBeTruthy();
+          expect(res.body.goods.length === 20).toBeTruthy();
+        });
+    });
+    it('GET items with default = 20 when specified limit is invalid : limit = 0', async () => {
+      const invalidLimit = 0;
+      const reqBody: GetItemsReq = { limit: '' + invalidLimit };
+      const resBody: GetItemsRes = {
+        goods: [
+          {
+            id: 0,
+            name: '',
+            titleImage: '',
+            price: 0,
+            provider: '',
+            options: [],
+            shipping: { method: '', price: 0, canBundle: true },
+          },
+        ],
+      };
+      return await request(app)
+        .get('/api/items')
+        .set('Content-Type', 'application/json')
+        .query(reqBody)
+        .send()
+        .expect(200)
+        .expect('Content-Type', 'application/json; charset=utf-8')
+        .then(async res => {
+          expect(isConformToInterface(res.body, resBody)).toBeTruthy();
+          expect(res.body.goods.length === 20).toBeTruthy();
+        });
+    });
+    it('GET items with default = 20 when specified limit is invalid : limit = -5', async () => {
+      const invalidLimit = -5;
+      const reqBody: GetItemsReq = { limit: '' + invalidLimit };
+      const resBody: GetItemsRes = {
+        goods: [
+          {
+            id: 0,
+            name: '',
+            titleImage: '',
+            price: 0,
+            provider: '',
+            options: [],
+            shipping: { method: '', price: 0, canBundle: true },
+          },
+        ],
+      };
+      return await request(app)
+        .get('/api/items')
+        .set('Content-Type', 'application/json')
+        .query(reqBody)
+        .send()
+        .expect(200)
+        .expect('Content-Type', 'application/json; charset=utf-8')
+        .then(async res => {
+          expect(isConformToInterface(res.body, resBody)).toBeTruthy();
+          expect(res.body.goods.length === 20).toBeTruthy();
         });
     });
   });
