@@ -1,15 +1,15 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, OneToMany } from 'typeorm';
 import { Item } from './Item';
 
 @Entity()
-export class Provider {
+export class Provider extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number; // 공급자 id
 
   @Column()
   name: string; // 공급자 이름
 
-  @ManyToOne(
+  @OneToMany(
     type => Item,
     item => item.provider,
   )

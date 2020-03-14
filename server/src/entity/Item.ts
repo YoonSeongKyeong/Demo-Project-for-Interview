@@ -1,4 +1,12 @@
-import { Entity, Column, OneToMany, PrimaryGeneratedColumn, ManyToOne, OneToOne } from 'typeorm';
+import {
+  Entity,
+  Column,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  OneToOne,
+  BaseEntity,
+} from 'typeorm';
 import { Provider } from './Provider';
 import { Shipping } from './Shipping';
 import { Option } from './Option';
@@ -6,7 +14,7 @@ import { Purchased } from './Purchased';
 import { Wish } from './Wish';
 
 @Entity()
-export class Item {
+export class Item extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number; // 상품 id
 
@@ -19,7 +27,7 @@ export class Item {
   @Column()
   price: number; // 상품 가격
 
-  @OneToMany(
+  @ManyToOne(
     type => Provider,
     provider => provider.items,
   )
@@ -31,7 +39,7 @@ export class Item {
   )
   shipping: Shipping;
 
-  @ManyToOne(
+  @OneToMany(
     type => Option,
     option => option.item,
   )
