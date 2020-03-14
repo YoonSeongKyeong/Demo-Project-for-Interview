@@ -64,17 +64,30 @@ describe('Integration API Test: ', () => {
 
   describe('GetItems', () => {
     it('GET all named items without specific query', async () => {
-      // const reqBody: GetItemsReq = {};
-      // const resBody: GetItemsRes = { goods: [] };
-      // return await request(app)
-      //   .get('/api/items')
-      //   .set('Content-Type', 'application/json')
-      //   .query(reqBody)
-      //   .send()
-      //   .expect(200)
-      //   .expect('Content-Type', 'application/json; charset=utf-8')
-      //   .expect(resBody);
-      expect(true).toBeTruthy();
+      const reqBody: GetItemsReq = {};
+      const resBody: GetItemsRes = {
+        goods: [
+          {
+            id: 0,
+            name: '',
+            titleImage: '',
+            price: 0,
+            provider: '',
+            options: [],
+            shipping: { method: '', price: 0, canBundle: true },
+          },
+        ],
+      };
+      return await request(app)
+        .get('/api/items')
+        .set('Content-Type', 'application/json')
+        .query(reqBody)
+        .send()
+        .expect(200)
+        .expect('Content-Type', 'application/json; charset=utf-8')
+        .then(res => {
+          expect(isConformToInterface(res.body, resBody)).toBeTruthy();
+        });
     });
   });
   xdescribe('GetMyCarts', () => {
