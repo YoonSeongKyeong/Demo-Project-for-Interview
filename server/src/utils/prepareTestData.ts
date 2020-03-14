@@ -104,7 +104,5 @@ export const prepareTestData = async (): Promise<TestSetUp_PrepareTestDataOutput
     ),
   );
 
-  console.log(providerObj, userObj);
-
   return { userAuthObj };
 };
