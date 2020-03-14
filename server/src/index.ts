@@ -5,8 +5,8 @@ import { prepareSetUpData } from './utils/prepareSetUpData';
 const main = async (): Promise<void> => {
   setConfigure();
   const serverObj = await createServer();
-  if (!serverObj) {
-    throw new Error('Failed Server Initialization');
+  if (serverObj === undefined) {
+    throw new Error('failed Server initialization');
   }
   if (process.env.NODE_ENV === 'develop') {
     await prepareSetUpData({ connection: serverObj.connection }); // setup Data for dev testing
