@@ -9,6 +9,7 @@ import {
   TestSetUp_UserObj,
   TestSetUp_UserAuthObj,
   TestSetUp_PrepareTestDataOutput,
+  CreateOptionEntity,
 } from '../interface/serversideSpecific';
 import { createProvider } from '../factory/ProviderFactory';
 import { testImg } from '../tests/testImg';
@@ -55,11 +56,17 @@ export const prepareTestData = async (): Promise<TestSetUp_PrepareTestDataOutput
         const newItem: CreateItemEntity = {
           ...createItemBaseForm,
           ...itemFeature,
-          provider: providerObj[itemFeature.name],
+          provider: providerObj[itemsGroup.providerName],
         };
+
         let item = await createItem(newItem);
         itemObj[item.name] = item; // itemObj에 name으로 등록
-        await Promise.all(options.map(option => createOption({ ...option, item })));
+        await Promise.all(
+          options.map(async option => {
+            const newOption: CreateOptionEntity = { ...option, item };
+            return await createOption(newOption);
+          }),
+        );
         await createShipping({ ...shipping, item });
         return;
       }),
@@ -88,13 +95,16 @@ export const prepareTestData = async (): Promise<TestSetUp_PrepareTestDataOutput
 
   // Wish 생성
   await Promise.all(
-    testFeatureObj.Wish.map(({ itemInfo: { itemName }, userInfo: { email } }) =>
-      createWish({
-        item: itemObj[itemName],
-        user: userObj[email],
-      }),
+    testFeatureObj.Wish.map(
+      async ({ itemInfo: { itemName }, userInfo: { email } }) =>
+        await createWish({
+          item: itemObj[itemName],
+          user: userObj[email],
+        }),
     ),
   );
+
+  console.log(providerObj, userObj);
 
   return { userAuthObj };
 };
