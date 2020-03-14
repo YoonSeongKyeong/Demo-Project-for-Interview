@@ -1,8 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn, BaseEntity } from 'typeorm';
 import { Item } from './Item';
 
 @Entity()
-export class Shipping {
+export class Shipping extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number; // 배송방식 id
 
