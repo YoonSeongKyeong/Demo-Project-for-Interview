@@ -98,13 +98,13 @@ export const testFeatureObj: TestFeature = {
           shipping: { method: 'PREPAY', price: 2500, canBundle: true },
         },
         {
-          itemFeature: { name: 'Expensive Umbrella Jacket', price: 99999999 },
+          itemFeature: { name: 'Expensive Umbrella Jacket', price: 999999 },
           options: [
             { color: 'black', size: 'S', stock: 1 },
             { color: 'black', size: 'M', stock: 1 },
             { color: 'black', size: 'L', stock: 1 },
           ],
-          shipping: { method: 'PREPAY', price: 99999999, canBundle: true },
+          shipping: { method: 'PREPAY', price: 999999, canBundle: true },
         },
       ],
     },
@@ -157,8 +157,8 @@ export const testFeatureObj: TestFeature = {
 
   User: [
     { name: 'ValidUser_NotEnoughCash', password: '1111', cash: 0, email: 'Valid@No.Cash' },
-    { name: 'ValidUser_EnoughCash', password: '1111', cash: 999999, email: 'Valid@Lot.Cash' },
-    { name: 'ValidUser_TestWish', password: '1111', cash: 999999, email: 'Valid@Test.Wish' },
+    { name: 'ValidUser_EnoughCash', password: '1111', cash: 99999999, email: 'Valid@Lot.Cash' },
+    { name: 'ValidUser_TestWish', password: '1111', cash: 99999999, email: 'Valid@Test.Wish' },
   ],
 
   Wish: [
