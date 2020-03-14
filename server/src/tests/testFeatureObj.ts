@@ -157,8 +157,8 @@ export const testFeatureObj: TestFeature = {
 
   User: [
     { name: 'ValidUser_NotEnoughCash', password: '1111', cash: 0, email: 'Valid@No.Cash' },
-    { name: 'ValidUser_EnoughCash', password: '1111', cash: 9999999999, email: 'Valid@Lot.Cash' },
-    { name: 'ValidUser_TestWish', password: '1111', cash: 9999999999, email: 'Valid@Test.Wish' },
+    { name: 'ValidUser_EnoughCash', password: '1111', cash: 999999, email: 'Valid@Lot.Cash' },
+    { name: 'ValidUser_TestWish', password: '1111', cash: 999999, email: 'Valid@Test.Wish' },
   ],
 
   Wish: [
