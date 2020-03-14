@@ -74,6 +74,8 @@ export const prepareTestData = async (): Promise<TestSetUp_PrepareTestDataOutput
   });
   await Promise.all(createItemThenOptionsThenShippingPromiseList);
 
+  const countOfItems = Object.keys(itemObj).length;
+
   // User 생성
   const userObj: TestSetUp_UserObj = {};
 
@@ -104,5 +106,5 @@ export const prepareTestData = async (): Promise<TestSetUp_PrepareTestDataOutput
     ),
   );
 
-  return { userAuthObj };
+  return { userAuthObj, countOfItems };
 };

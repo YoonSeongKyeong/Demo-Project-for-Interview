@@ -283,4 +283,38 @@ export type TestSetUp_UserObj = { [user: string]: User };
 
 export type TestSetUp_UserAuthObj = { [user: string]: { user: User; auth: string } };
 
-export type TestSetUp_PrepareTestDataOutput = { userAuthObj: TestSetUp_UserAuthObj };
+export type TestSetUp_PrepareTestDataOutput = {
+  userAuthObj: TestSetUp_UserAuthObj;
+  countOfItems: number;
+};
+
+export type DecodeSetCookieInput = string[];
+
+export type DecodeSetCookieForm = {
+  // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie
+  Payload: TokenForAuth | TokenForWish;
+  Expires?: Date;
+  'Max-Age'?: number;
+  Domain?: string;
+  Path?: string;
+  Secure: boolean;
+  HttpOnly: boolean;
+  SameSite?: string;
+};
+
+export type DecodeSetCookieOutput = {
+  [Name: string]: DecodeSetCookieForm;
+};
+
+export type ValidateSetCookieInput = { cookieObj: DecodeSetCookieForm; isExpired?: boolean };
+
+export type ValidateSetCookieOutput = boolean;
+
+export type ConfigOfSetCookie = {
+  'Max-Age': number | undefined;
+  Domain: string;
+  Path: string;
+  Secure: boolean;
+  HttpOnly: boolean;
+  SameSite: string | undefined;
+};
