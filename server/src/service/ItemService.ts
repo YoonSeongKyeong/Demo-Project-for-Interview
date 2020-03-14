@@ -38,7 +38,7 @@ export class ItemService {
       const itemForm: ItemForm = {
         id: item.id,
         name: item.name,
-        titleImage: item.titleImage,
+        titleImage: Buffer.from(item.titleImage).toString('base64'), // Blob -> Base64
         price: item.price,
         provider: item.provider.name,
         options,
