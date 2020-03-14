@@ -19,7 +19,7 @@ export const extractJWT = async (
       }
       throw new Error(`Invalid Token Name [${tokenName}]`);
     } catch (err) {
-      throw err;
+      throw new Error(`Invalid Token [${tokenName}]`);
     }
   }
   throw new Error(`cannot find token in cookie [${tokenName}]`);
@@ -37,10 +37,10 @@ export const extractJWTForTest = async (
       } else if (tokenName === 'wish') {
         return decoded as TokenForWish;
       }
-      throw new Error('Invalid Token Name');
+      throw new Error(`Invalid Token Name [${tokenName}]`);
     } catch (err) {
-      throw err;
+      throw new Error(`Invalid Token [${tokenName}]`);
     }
   }
-  throw new Error('jwt cannot decode token');
+  throw new Error(`cannot find token in cookie [${tokenName}]`);
 };

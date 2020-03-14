@@ -26,6 +26,7 @@ export async function getMyCart(request: Request, response: Response): Promise<v
     itemIdList = wish.itemIdList;
   } catch (error) {
     if (
+      error.message === 'Invalid Token [wish]' ||
       error.message === 'Invalid Token Name [wish]' ||
       error.message === 'cannot find token in cookie [wish]'
     ) {
@@ -55,6 +56,7 @@ export async function getMyCart(request: Request, response: Response): Promise<v
       }
     } catch (error) {
       if (
+        error.message === 'Invalid Token [auth]' ||
         error.message === 'Invalid Token Name [auth]' ||
         error.message === 'cannot find token in cookie [auth]' ||
         error.message === 'Invalid User Id'

@@ -22,6 +22,7 @@ export async function deleteMyCart(request: Request, response: Response): Promis
     itemIdList = wish.itemIdList;
   } catch (error) {
     if (
+      error.message === 'Invalid Token [wish]' ||
       error.message === 'Invalid Token Name [wish]' ||
       error.message === 'cannot find token in cookie [wish]'
     ) {
@@ -50,6 +51,7 @@ export async function deleteMyCart(request: Request, response: Response): Promis
       }
     } catch (error) {
       if (
+        error.message === 'Invalid Token [auth]' ||
         error.message === 'Invalid Token Name [auth]' ||
         error.message === 'cannot find token in cookie [auth]' ||
         error.message === 'Invalid User Id'
