@@ -75,6 +75,7 @@ export async function getMyCart(request: Request, response: Response): Promise<v
       }
     } finally {
       // 쿠키의 장바구니를 업데이트한다.
+      itemIdList.sort((a, b) => a - b); // 오름차순 보장
       response.cookie('wish', signJWTForWish({ itemIdList }), {
         expires: new Date(Date.now() + 900000000000),
         httpOnly: true,

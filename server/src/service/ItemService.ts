@@ -16,8 +16,8 @@ export class ItemService {
     this.itemRepository = getRepository(Item);
   }
 
-  private ConvertItemEntityListToItemFormList = (items: Item[]): ItemForm[] =>
-    items.map(item => {
+  private ConvertItemEntityListToItemFormList = (items: Item[]): ItemForm[] => {
+    const itemFormList = items.map(item => {
       // item form 작성, 필요한 property만 추출
       const options = item.options.map(option => {
         const { id, color, size, stock } = option;
@@ -47,6 +47,9 @@ export class ItemService {
 
       return itemForm;
     });
+    itemFormList.sort((a, b) => a.id - b.id); // 오름차순 보장
+    return itemFormList;
+  };
 
   getItemFormListByCriteria = async (
     criteria: ItemService_GetItemFormListByCriteriaInput,
