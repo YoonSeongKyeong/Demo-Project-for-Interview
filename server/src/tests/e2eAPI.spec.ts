@@ -6,15 +6,26 @@ import { Application } from 'express';
 import * as http from 'http';
 import { createServer } from '../app';
 import { setConfigure, configs } from '../utils/configs';
-import { CreateServer } from '../interface/serversideSpecific';
+import {
+  CreateServer,
+  TestSetUp_UserAuthObj,
+  TokenForWish,
+  ItemIdList,
+} from '../interface/serversideSpecific';
 import { prepareTestData } from '../utils/prepareTestData';
 import { isConformToInterface } from '../utils/isConformToInterface';
-import { GetItemsReq, GetItemsRes, ItemForm } from '../interface/api';
+import { GetItemsReq, GetItemsRes, ItemForm, GetMyCartRes } from '../interface/api';
+import { decodeSetCookie } from '../utils/decodeSetCookie';
+import { signJWTForWish } from '../utils/signJWT';
+import { validateSetCookie } from '../utils/validateSetCookie';
 
 // declare server core variables
 let app: Application;
 let connection: Connection;
 let httpServer: http.Server; // key of closing server
+
+let userInfo: TestSetUp_UserAuthObj;
+let countOfItems: number;
 
 const setUpRoutine = async (): Promise<void> => {
   setConfigure();
@@ -30,7 +41,9 @@ const setUpRoutine = async (): Promise<void> => {
 const refreshRoutine = async (): Promise<void> => {
   await connection.dropDatabase();
   await connection.runMigrations();
-  await prepareTestData();
+  const preprareTestDataOutput = await prepareTestData();
+  userInfo = preprareTestDataOutput.userAuthObj;
+  countOfItems = preprareTestDataOutput.countOfItems;
 };
 
 const closeRoutine = async (): Promise<void> => {
@@ -62,7 +75,7 @@ describe('Integration API Test: ', () => {
   // Test cases
   // -------------------------------------------------------------------------
 
-  describe('GetItems', () => {
+  xdescribe('GetItems', () => {
     it('GET all named items without specified query', async () => {
       const reqBody: GetItemsReq = {};
       const resBody: GetItemsRes = {
@@ -432,26 +445,161 @@ describe('Integration API Test: ', () => {
         });
     });
   });
-  xdescribe('GetMyCarts', () => {
-    it('descriptive test name', async () => {
-      //   const reqBody = {};
-      //   return await request(app)
-      //     .get('/api/~~~')
-      //     .query({ reqBody: JSON.stringify(reqBody) })
-      //     .set('Content-Type', 'application/json')
-      //     .set('Cookie', `token=${'user-jwt'}`)
-      //     .send()
-      //     .expect(404)
-      //     .then(async res => {
-      //       // parse cookie
-      //       const parseCookie = res.header['set-cookie'][0]
-      //         .split(',')
-      //         .map((item: string) => item.split(';')[0]);
-      //       const [key] = parseCookie[0].split('=');
-      //       const expiration = new Date(parseCookie[1]).getTime();
-      //       expect(expiration).toBeLessThan(Date.now()); // cleared
-      //       expect(key).toEqual('token');
-      //     });
+  describe('GetMyCart', () => {
+    it('Creates new Wish Cookie, when there is No Valid Wish Cookie in request, No Auth Cookie', async () => {
+      const resToken: TokenForWish = {
+        itemIdList: [1],
+      };
+      const resBody: GetMyCartRes = {
+        goods: [
+          {
+            id: 0,
+            name: '',
+            titleImage: '',
+            price: 0,
+            provider: '',
+            options: [],
+            shipping: { method: '', price: 0, canBundle: true },
+          },
+        ],
+      };
+      return await request(app)
+        .get('/api/mycart')
+        .set('Content-Type', 'application/json')
+        .set('Cookie', `wish=INVALID`)
+        .send()
+        .expect(200)
+        .then(async res => {
+          expect(isConformToInterface(res.body, resBody)).toBeTruthy();
+          expect(res.body.goods.length === 0).toBeTruthy(); // Empty resBody
+
+          // Test Cookie
+          const cookieObj = await decodeSetCookie(res.header['set-cookie']);
+          const { Payload } = cookieObj.wish;
+          expect(isConformToInterface(Payload, resToken)).toBeTruthy();
+          const token = Payload as TokenForWish;
+          expect(token.itemIdList.length === 0).toBeTruthy(); // Create New Empty Wish List
+          expect(validateSetCookie({ cookieObj: cookieObj.wish, isExpired: false })).toBeTruthy();
+        });
+    });
+    it('Get Cart only by Wish List in Cookie, when there is valid Wish Cookie in request, No Auth Cookie', async () => {
+      const unordereditemIdList: ItemIdList = [1, 2, 4, 10, 5, 3, 9]; // 1부터 41까지 Item ID가 존재한다고 가정한다.
+      const resToken: TokenForWish = {
+        itemIdList: [1],
+      };
+      const resBody: GetMyCartRes = {
+        goods: [
+          {
+            id: 0,
+            name: '',
+            titleImage: '',
+            price: 0,
+            provider: '',
+            options: [],
+            shipping: { method: '', price: 0, canBundle: true },
+          },
+        ],
+      };
+      return await request(app)
+        .get('/api/mycart')
+        .set('Content-Type', 'application/json')
+        .set('Cookie', `wish=${signJWTForWish({ itemIdList: unordereditemIdList })}`)
+        .send()
+        .expect(200)
+        .then(async res => {
+          expect(isConformToInterface(res.body, resBody)).toBeTruthy();
+          const resItemIdList = res.body.goods.map((item: ItemForm) => item.id);
+          const sortedItemIdList = [...unordereditemIdList];
+          sortedItemIdList.sort((a, b) => a - b);
+          expect(sortedItemIdList).toMatchObject(resItemIdList); // 응답되는 list는 항상 id 기준 오름차순을 유지한다.
+
+          // Test Cookie
+          const cookieObj = await decodeSetCookie(res.header['set-cookie']);
+          const { Payload } = cookieObj.wish;
+          expect(isConformToInterface(Payload, resToken)).toBeTruthy();
+          const token = Payload as TokenForWish;
+          expect(token.itemIdList).toMatchObject(sortedItemIdList); // 응답되는 list는 항상 id 기준 오름차순을 유지한다.
+          expect(validateSetCookie({ cookieObj: cookieObj.wish, isExpired: false })).toBeTruthy();
+        });
+    });
+    it('Get Cart of filtered Items, only by Wish List in Cookie, when there is valid Wish Cookie in request: itemIdList having not registered Id, No Auth Cookie', async () => {
+      const unfiltereditemIdList: ItemIdList = [1, 2, -51, 4, 10, 5, 3, 9, -3, 0, 99999999, -7]; // 1부터 41까지 Item ID가 존재한다고 가정한다.
+      const resToken: TokenForWish = {
+        itemIdList: [1],
+      };
+      const resBody: GetMyCartRes = {
+        goods: [
+          {
+            id: 0,
+            name: '',
+            titleImage: '',
+            price: 0,
+            provider: '',
+            options: [],
+            shipping: { method: '', price: 0, canBundle: true },
+          },
+        ],
+      };
+      return await request(app)
+        .get('/api/mycart')
+        .set('Content-Type', 'application/json')
+        .set('Cookie', `wish=${signJWTForWish({ itemIdList: unfiltereditemIdList })}`)
+        .send()
+        .expect(200)
+        .then(async res => {
+          expect(isConformToInterface(res.body, resBody)).toBeTruthy();
+          const resItemIdList = res.body.goods.map((item: ItemForm) => item.id);
+          expect(unfiltereditemIdList).not.toMatchObject(resItemIdList);
+          const sortedItemIdList = [
+            ...unfiltereditemIdList.filter(id => id <= countOfItems && id > 0),
+          ];
+          sortedItemIdList.sort((a, b) => a - b);
+          expect(sortedItemIdList).toMatchObject(resItemIdList); // 응답되는 list는 항상 id 기준 오름차순을 유지한다.
+
+          // Test Cookie
+          const cookieObj = await decodeSetCookie(res.header['set-cookie']);
+          const { Payload } = cookieObj.wish;
+          expect(isConformToInterface(Payload, resToken)).toBeTruthy();
+          const token = Payload as TokenForWish;
+          expect(token.itemIdList).not.toMatchObject(sortedItemIdList); // GetMyCart는 wish쿠키의 unregistered id를 제거해주지 못한다. (registered id의 기준 x)
+          expect(validateSetCookie({ cookieObj: cookieObj.wish, isExpired: false })).toBeTruthy();
+        });
+    });
+    it('Creates new Wish Cookie, when there is No Valid Wish Cookie in request, with Auth Cookie of who having No Wish Info', async () => {
+      const resToken: TokenForWish = {
+        itemIdList: [1],
+      };
+      const resBody: GetMyCartRes = {
+        goods: [
+          {
+            id: 0,
+            name: '',
+            titleImage: '',
+            price: 0,
+            provider: '',
+            options: [],
+            shipping: { method: '', price: 0, canBundle: true },
+          },
+        ],
+      };
+      return await request(app)
+        .get('/api/mycart')
+        .set('Content-Type', 'application/json')
+        .set('Cookie', `wish=INVALID, auth=${userInfo['Valid@Lot.Cash'].auth}`)
+        .send()
+        .expect(200)
+        .then(async res => {
+          expect(isConformToInterface(res.body, resBody)).toBeTruthy();
+          expect(res.body.goods.length === 0).toBeTruthy(); // Empty resBody
+
+          // Test Cookie
+          const cookieObj = await decodeSetCookie(res.header['set-cookie']);
+          const { Payload: wishPayload } = cookieObj.wish;
+          expect(isConformToInterface(wishPayload, resToken)).toBeTruthy();
+          const wishToken = wishPayload as TokenForWish;
+          expect(wishToken.itemIdList.length === 0).toBeTruthy(); // Create New Empty Wish List
+          expect(validateSetCookie({ cookieObj: cookieObj.wish, isExpired: false })).toBeTruthy();
+        });
     });
   });
   xdescribe('PostMyCarts', () => {
