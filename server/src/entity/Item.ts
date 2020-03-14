@@ -1,12 +1,4 @@
-import {
-  Entity,
-  Column,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  ManyToOne,
-  OneToOne,
-  BaseEntity,
-} from 'typeorm';
+import { Entity, Column, OneToMany, PrimaryGeneratedColumn, ManyToOne, OneToOne } from 'typeorm';
 import { Provider } from './Provider';
 import { Shipping } from './Shipping';
 import { Option } from './Option';
@@ -14,7 +6,7 @@ import { Purchased } from './Purchased';
 import { Wish } from './Wish';
 
 @Entity()
-export class Item extends BaseEntity {
+export class Item {
   @PrimaryGeneratedColumn()
   id: number; // 상품 id
 

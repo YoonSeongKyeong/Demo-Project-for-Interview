@@ -1,8 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Item } from './Item';
 
 @Entity()
-export class Provider extends BaseEntity {
+export class Provider {
   @PrimaryGeneratedColumn()
   id: number; // 공급자 id
 

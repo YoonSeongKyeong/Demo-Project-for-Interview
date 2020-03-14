@@ -1,8 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, Check, BaseEntity } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, Check } from 'typeorm';
 import { Item } from './Item';
 
 @Entity()
-export class Option extends BaseEntity {
+export class Option {
   // !ISSUE: 나중에 option별로 추가금액을 설정해줄 수 있다.
   @PrimaryGeneratedColumn()
   id: number; // 옵션 id
