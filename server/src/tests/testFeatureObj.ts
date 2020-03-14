@@ -6,9 +6,11 @@ export const testFeatureObj: TestFeature = {
   Provider: [{ name: 'StyleShare' }, { name: '29cm' }, { name: 'HelloWorld' }],
 
   Item: [
+    // 총 41개 상품
     {
       providerName: 'StyleShare',
       items: [
+        // 6개 상품
         {
           itemFeature: { name: 'Python Hood T-Shirts', price: 20000 },
           options: [
@@ -71,6 +73,7 @@ export const testFeatureObj: TestFeature = {
     {
       providerName: '29cm',
       items: [
+        // 4개 상품
         {
           itemFeature: { name: 'Django Jacket', price: 15000 },
           options: [
@@ -111,6 +114,7 @@ export const testFeatureObj: TestFeature = {
     {
       providerName: 'HelloWorld',
       items: [
+        // 31개 상품
         {
           itemFeature: { name: 'Jest Vest', price: 25000 },
           options: [
