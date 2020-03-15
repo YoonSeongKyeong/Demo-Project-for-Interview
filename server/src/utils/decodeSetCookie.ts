@@ -5,19 +5,26 @@ import {
 } from '../interface/serversideSpecific';
 import { extractJWTForTest } from './extractJWT';
 
-export const decodeSetCookie = async (
+export const decodeSetCookie = (
   setCookieSrcStrings: DecodeSetCookieInput,
-): Promise<DecodeSetCookieOutput> => {
+): DecodeSetCookieOutput => {
+  debugger;
   const setCookieObj: DecodeSetCookieOutput = {};
-  setCookieSrcStrings.forEach(async srcStr => {
+  setCookieSrcStrings.map(async srcStr => {
     const propertyList = srcStr.split(';').map(str => str.trim());
     const mainkeyValue = propertyList.shift()?.split('=');
     if (mainkeyValue === undefined) {
       throw new Error('Invalid Set-Cookie : name does not exist');
     }
     const nameOfCookie = mainkeyValue[0];
+    let Payload;
+    try {
+      Payload = extractJWTForTest(nameOfCookie, mainkeyValue[1]);
+    } catch (error) {
+      Payload = undefined;
+    }
     const cookieForm: DecodeSetCookieForm = {
-      Payload: await extractJWTForTest(nameOfCookie, mainkeyValue[1]),
+      Payload,
       Secure: false,
       HttpOnly: false,
     };

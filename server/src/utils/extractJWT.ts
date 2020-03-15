@@ -4,10 +4,7 @@ import * as jwt from 'jsonwebtoken';
 import { configs } from './configs';
 import { TokenForAuth, TokenForWish } from '../interface/serversideSpecific';
 
-export const extractJWT = async (
-  tokenName: string,
-  req: Request,
-): Promise<TokenForAuth | TokenForWish> => {
+export const extractJWT = (tokenName: string, req: Request): TokenForAuth | TokenForWish => {
   const token = req.cookies[tokenName];
   if (token !== undefined) {
     try {
@@ -25,10 +22,10 @@ export const extractJWT = async (
   throw new Error(`cannot find token in cookie [${tokenName}]`);
 };
 
-export const extractJWTForTest = async (
+export const extractJWTForTest = (
   tokenName: string,
   token: string,
-): Promise<TokenForAuth | TokenForWish> => {
+): TokenForAuth | TokenForWish => {
   if (token !== undefined) {
     try {
       const decoded = jwt.verify(token, configs.JWT_SECRET as string);

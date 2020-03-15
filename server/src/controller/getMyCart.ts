@@ -22,7 +22,7 @@ export async function getMyCart(request: Request, response: Response): Promise<v
   let itemIdList: ItemIdList = [];
   try {
     // 쿠키의 장바구니 정보 확인
-    const wish = (await extractJWT('wish', request)) as TokenForWish;
+    const wish = extractJWT('wish', request) as TokenForWish;
     itemIdList = wish.itemIdList;
   } catch (error) {
     if (
@@ -39,7 +39,7 @@ export async function getMyCart(request: Request, response: Response): Promise<v
   } finally {
     try {
       // 로그인 정보 확인
-      const auth = (await extractJWT('auth', request)) as TokenForAuth;
+      const auth = extractJWT('auth', request) as TokenForAuth;
       const { id } = auth;
 
       if (id && (await userService.isValidUser(id))) {
@@ -62,7 +62,7 @@ export async function getMyCart(request: Request, response: Response): Promise<v
         error.message === 'Invalid User Id'
       ) {
         // 유저 정보가 없는 경우
-        if (error.message === 'Invalid User Id') {
+        if (error.message !== 'cannot find token in cookie [auth]') {
           // id가 유효하지 않은 경우, Clear Cookie
           response.clearCookie('auth', { domain: configs.CLIENT_DOMAIN, path: '/' });
         }
@@ -76,14 +76,16 @@ export async function getMyCart(request: Request, response: Response): Promise<v
     } finally {
       // 쿠키의 장바구니를 업데이트한다.
       itemIdList.sort((a, b) => a - b); // 오름차순 보장
-      response.cookie('wish', signJWTForWish({ itemIdList }), {
-        expires: new Date(Date.now() + 900000000000),
-        httpOnly: true,
-        domain: configs.CLIENT_DOMAIN,
-        path: '/',
-      });
       resBody = { goods };
-      response.status(200).json(resBody);
+      response
+        .cookie('wish', signJWTForWish({ itemIdList }), {
+          expires: new Date(Date.now() + 900000000000),
+          httpOnly: true,
+          domain: configs.CLIENT_DOMAIN,
+          path: '/',
+        })
+        .status(200)
+        .json(resBody);
     }
   }
 }
