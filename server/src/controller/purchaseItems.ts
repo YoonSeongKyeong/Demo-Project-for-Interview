@@ -14,7 +14,7 @@ export async function purchaseItems(request: Request, response: Response): Promi
   let resBody: PurchaseItemRes;
 
   try {
-    const auth = (await extractJWT('auth', request)) as TokenForAuth;
+    const auth = extractJWT('auth', request) as TokenForAuth;
     const { id } = auth;
 
     const { goods } = request.body; // interface 외의 정보 제거
@@ -57,8 +57,8 @@ export async function purchaseItems(request: Request, response: Response): Promi
       error.message === 'Invalid User Id'
     ) {
       // 유저 정보가 없는 경우
-      if (error.message === 'Invalid User Id') {
-        // id가 유효하지 않은 경우, Clear Cookie
+      // id가 유효하지 않은 경우, Clear Cookie
+      if (error.message !== 'cannot find token in cookie [auth]') {
         response.clearCookie('auth', { domain: configs.CLIENT_DOMAIN, path: '/' });
       }
       resBody = { isSuccess: false, price: 0 }; // 요청 실패 전송

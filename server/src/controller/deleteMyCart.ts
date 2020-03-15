@@ -18,7 +18,7 @@ export async function deleteMyCart(request: Request, response: Response): Promis
 
   try {
     // 쿠키의 장바구니 정보 확인
-    const wish = (await extractJWT('wish', request)) as TokenForWish;
+    const wish = extractJWT('wish', request) as TokenForWish;
     itemIdList = wish.itemIdList;
   } catch (error) {
     if (
@@ -37,7 +37,7 @@ export async function deleteMyCart(request: Request, response: Response): Promis
     itemIdList = itemIdList.filter(id => !reqBody.itemIdList.includes(id));
     try {
       // 로그인 정보를 받아온다.
-      const auth = (await extractJWT('auth', request)) as TokenForAuth;
+      const auth = extractJWT('auth', request) as TokenForAuth;
       const { id } = auth;
 
       const userService = new UserService();
@@ -57,8 +57,8 @@ export async function deleteMyCart(request: Request, response: Response): Promis
         error.message === 'Invalid User Id'
       ) {
         // 유저 정보가 없는 경우
-        if (error.message === 'Invalid User Id') {
-          // id가 유효하지 않은 경우, Clear Cookie
+        // id가 유효하지 않은 경우, Clear Cookie
+        if (error.message !== 'cannot find token in cookie [auth]') {
           response.clearCookie('auth', { domain: configs.CLIENT_DOMAIN, path: '/' });
         }
       } else {
