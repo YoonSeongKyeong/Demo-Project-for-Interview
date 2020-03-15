@@ -11,6 +11,7 @@ import {
   TestSetUp_UserAuthObj,
   TokenForWish,
   ItemIdList,
+  TokenForAuth,
 } from '../interface/serversideSpecific';
 import { prepareTestData } from '../utils/prepareTestData';
 import { isConformToInterface } from '../utils/isConformToInterface';
@@ -244,7 +245,7 @@ describe('Integration API Test: ', () => {
         .send()
         .expect(200)
         .expect('Content-Type', 'application/json; charset=utf-8')
-        .then(async res => {
+        .then(res => {
           expect(isConformToInterface(res.body, resBody)).toBeTruthy();
           expect(res.body.goods).toEqual([]);
         });
@@ -271,7 +272,7 @@ describe('Integration API Test: ', () => {
         .send()
         .expect(200)
         .expect('Content-Type', 'application/json; charset=utf-8')
-        .then(async res => {
+        .then(res => {
           expect(isConformToInterface(res.body, resBody)).toBeTruthy();
           expect(res.body.goods.length === 20).toBeTruthy();
         });
@@ -299,7 +300,7 @@ describe('Integration API Test: ', () => {
         .send()
         .expect(200)
         .expect('Content-Type', 'application/json; charset=utf-8')
-        .then(async res => {
+        .then(res => {
           expect(isConformToInterface(res.body, resBody)).toBeTruthy();
           expect(res.body.goods.length === randomLimit).toBeTruthy();
         });
@@ -327,7 +328,7 @@ describe('Integration API Test: ', () => {
         .send()
         .expect(200)
         .expect('Content-Type', 'application/json; charset=utf-8')
-        .then(async res => {
+        .then(res => {
           expect(isConformToInterface(res.body, resBody)).toBeTruthy();
           expect(res.body.goods.length < tooMuchLimit).toBeTruthy();
         });
@@ -355,7 +356,7 @@ describe('Integration API Test: ', () => {
         .send()
         .expect(200)
         .expect('Content-Type', 'application/json; charset=utf-8')
-        .then(async res => {
+        .then(res => {
           expect(isConformToInterface(res.body, resBody)).toBeTruthy();
           expect(res.body.goods.length === 20).toBeTruthy();
         });
@@ -383,7 +384,7 @@ describe('Integration API Test: ', () => {
         .send()
         .expect(200)
         .expect('Content-Type', 'application/json; charset=utf-8')
-        .then(async res => {
+        .then(res => {
           expect(isConformToInterface(res.body, resBody)).toBeTruthy();
           expect(res.body.goods.length === 20).toBeTruthy();
         });
@@ -411,7 +412,7 @@ describe('Integration API Test: ', () => {
         .send()
         .expect(200)
         .expect('Content-Type', 'application/json; charset=utf-8')
-        .then(async res => {
+        .then(res => {
           expect(isConformToInterface(res.body, resBody)).toBeTruthy();
           expect(res.body.goods.length === 20).toBeTruthy();
         });
@@ -439,14 +440,14 @@ describe('Integration API Test: ', () => {
         .send()
         .expect(200)
         .expect('Content-Type', 'application/json; charset=utf-8')
-        .then(async res => {
+        .then(res => {
           expect(isConformToInterface(res.body, resBody)).toBeTruthy();
           expect(res.body.goods.length === 20).toBeTruthy();
         });
     });
   });
   describe('GetMyCart', () => {
-    it('Creates new Wish Cookie, when there is No Valid Wish Cookie in request, No Auth Cookie', async () => {
+    xit('Creates new Wish Cookie Responding with Empty Item List, when there is No Valid Wish Cookie in request, No Auth Cookie', async () => {
       const resToken: TokenForWish = {
         itemIdList: [1],
       };
@@ -466,15 +467,15 @@ describe('Integration API Test: ', () => {
       return await request(app)
         .get('/api/mycart')
         .set('Content-Type', 'application/json')
-        .set('Cookie', `wish=INVALID`)
+        .set('Cookie', [`wish=INVALID`])
         .send()
         .expect(200)
-        .then(async res => {
+        .then(res => {
           expect(isConformToInterface(res.body, resBody)).toBeTruthy();
-          expect(res.body.goods.length === 0).toBeTruthy(); // Empty resBody
+          expect(res.body.goods.length === 0).toBeTruthy(); // Empty Item List
 
           // Test Cookie
-          const cookieObj = await decodeSetCookie(res.header['set-cookie']);
+          const cookieObj = decodeSetCookie(res.header['set-cookie']);
           const { Payload } = cookieObj.wish;
           expect(isConformToInterface(Payload, resToken)).toBeTruthy();
           const token = Payload as TokenForWish;
@@ -482,8 +483,8 @@ describe('Integration API Test: ', () => {
           expect(validateSetCookie({ cookieObj: cookieObj.wish, isExpired: false })).toBeTruthy();
         });
     });
-    it('Get Cart only by Wish List in Cookie, when there is valid Wish Cookie in request, No Auth Cookie', async () => {
-      const unordereditemIdList: ItemIdList = [1, 2, 4, 10, 5, 3, 9]; // 1부터 41까지 Item ID가 존재한다고 가정한다.
+    xit('Get Cart only by Wish List in Cookie, when there is valid Wish Cookie in request, No Auth Cookie', async () => {
+      const unsorteditemIdList: ItemIdList = [1, 2, 4, 10, 5, 3, 9]; // 1부터 countOfItem까지 Item ID가 존재한다고 가정한다.
       const resToken: TokenForWish = {
         itemIdList: [1],
       };
@@ -503,18 +504,18 @@ describe('Integration API Test: ', () => {
       return await request(app)
         .get('/api/mycart')
         .set('Content-Type', 'application/json')
-        .set('Cookie', `wish=${signJWTForWish({ itemIdList: unordereditemIdList })}`)
+        .set('Cookie', [`wish=${signJWTForWish({ itemIdList: unsorteditemIdList })}`])
         .send()
         .expect(200)
-        .then(async res => {
+        .then(res => {
           expect(isConformToInterface(res.body, resBody)).toBeTruthy();
           const resItemIdList = res.body.goods.map((item: ItemForm) => item.id);
-          const sortedItemIdList = [...unordereditemIdList];
+          const sortedItemIdList = [...unsorteditemIdList];
           sortedItemIdList.sort((a, b) => a - b);
           expect(sortedItemIdList).toMatchObject(resItemIdList); // 응답되는 list는 항상 id 기준 오름차순을 유지한다.
 
           // Test Cookie
-          const cookieObj = await decodeSetCookie(res.header['set-cookie']);
+          const cookieObj = decodeSetCookie(res.header['set-cookie']);
           const { Payload } = cookieObj.wish;
           expect(isConformToInterface(Payload, resToken)).toBeTruthy();
           const token = Payload as TokenForWish;
@@ -522,8 +523,8 @@ describe('Integration API Test: ', () => {
           expect(validateSetCookie({ cookieObj: cookieObj.wish, isExpired: false })).toBeTruthy();
         });
     });
-    it('Get Cart of filtered Items, only by Wish List in Cookie, when there is valid Wish Cookie in request: itemIdList having not registered Id, No Auth Cookie', async () => {
-      const unfiltereditemIdList: ItemIdList = [1, 2, -51, 4, 10, 5, 3, 9, -3, 0, 99999999, -7]; // 1부터 41까지 Item ID가 존재한다고 가정한다.
+    xit('Get Cart of filtered Items, only by Wish List in Cookie, when there is valid Wish Cookie in request: itemIdList having not registered Id, No Auth Cookie', async () => {
+      const unfiltereditemIdList: ItemIdList = [1, 2, -51, 4, 10, 5, 3, 9, -3, 0, 99999999, -7]; // 1부터 countOfItem까지 Item ID가 존재한다고 가정한다.
       const resToken: TokenForWish = {
         itemIdList: [1],
       };
@@ -543,10 +544,10 @@ describe('Integration API Test: ', () => {
       return await request(app)
         .get('/api/mycart')
         .set('Content-Type', 'application/json')
-        .set('Cookie', `wish=${signJWTForWish({ itemIdList: unfiltereditemIdList })}`)
+        .set('Cookie', [`wish=${signJWTForWish({ itemIdList: unfiltereditemIdList })}`])
         .send()
         .expect(200)
-        .then(async res => {
+        .then(res => {
           expect(isConformToInterface(res.body, resBody)).toBeTruthy();
           const resItemIdList = res.body.goods.map((item: ItemForm) => item.id);
           expect(unfiltereditemIdList).not.toMatchObject(resItemIdList);
@@ -557,7 +558,7 @@ describe('Integration API Test: ', () => {
           expect(sortedItemIdList).toMatchObject(resItemIdList); // 응답되는 list는 항상 id 기준 오름차순을 유지한다.
 
           // Test Cookie
-          const cookieObj = await decodeSetCookie(res.header['set-cookie']);
+          const cookieObj = decodeSetCookie(res.header['set-cookie']);
           const { Payload } = cookieObj.wish;
           expect(isConformToInterface(Payload, resToken)).toBeTruthy();
           const token = Payload as TokenForWish;
@@ -565,7 +566,46 @@ describe('Integration API Test: ', () => {
           expect(validateSetCookie({ cookieObj: cookieObj.wish, isExpired: false })).toBeTruthy();
         });
     });
-    it('Creates new Wish Cookie, when there is No Valid Wish Cookie in request, with Auth Cookie of who having No Wish Info', async () => {
+    xit('Creates new Wish Cookie Responding with Empty Item List, Clearing Auth Cookie, when there is No Valid Wish Cookie in request, with Invalid Auth Cookie', async () => {
+      const resToken: TokenForWish = {
+        itemIdList: [1],
+      };
+      const resBody: GetMyCartRes = {
+        goods: [
+          {
+            id: 0,
+            name: '',
+            titleImage: '',
+            price: 0,
+            provider: '',
+            options: [],
+            shipping: { method: '', price: 0, canBundle: true },
+          },
+        ],
+      };
+      debugger;
+      return await request(app)
+        .get('/api/mycart')
+        .set('Content-Type', 'application/json')
+        .set('Cookie', [`wish=INVALID`, `auth=INVALID`])
+        .send()
+        .expect(200)
+        .then(res => {
+          expect(isConformToInterface(res.body, resBody)).toBeTruthy();
+          expect(res.body.goods.length === 0).toBeTruthy(); // Empty Item List
+
+          // Test Cookie
+          const cookieObj = decodeSetCookie(res.header['set-cookie']);
+          const { Payload: wishPayload } = cookieObj.wish;
+          expect(isConformToInterface(wishPayload, resToken)).toBeTruthy();
+          const wishToken = wishPayload as TokenForWish;
+          expect(wishToken.itemIdList.length === 0).toBeTruthy(); // Create New Empty Wish List
+          expect(validateSetCookie({ cookieObj: cookieObj.wish, isExpired: false })).toBeTruthy();
+          expect(validateSetCookie({ cookieObj: cookieObj.auth, isExpired: true })).toBeTruthy(); // Clear Auth Cookie
+          expect(cookieObj.auth.Payload).toEqual(undefined);
+        });
+    });
+    it('Creates new Wish Cookie Responding with Empty Item List, when there is No Valid Wish Cookie in request, with Auth Cookie of who having No Wish Info', async () => {
       const resToken: TokenForWish = {
         itemIdList: [1],
       };
@@ -585,15 +625,130 @@ describe('Integration API Test: ', () => {
       return await request(app)
         .get('/api/mycart')
         .set('Content-Type', 'application/json')
-        .set('Cookie', `wish=INVALID, auth=${userInfo['Valid@Lot.Cash'].auth}`)
+        .set('Cookie', [`wish=INVALID`, `auth=${userInfo['Valid@Lot.Cash'].auth}`])
         .send()
         .expect(200)
-        .then(async res => {
+        .then(res => {
           expect(isConformToInterface(res.body, resBody)).toBeTruthy();
-          expect(res.body.goods.length === 0).toBeTruthy(); // Empty resBody
+          expect(res.body.goods.length === 0).toBeTruthy(); // Empty Item List
 
           // Test Cookie
-          const cookieObj = await decodeSetCookie(res.header['set-cookie']);
+          const cookieObj = decodeSetCookie(res.header['set-cookie']);
+          const { Payload: wishPayload } = cookieObj.wish;
+          expect(isConformToInterface(wishPayload, resToken)).toBeTruthy();
+          const wishToken = wishPayload as TokenForWish;
+          expect(wishToken.itemIdList.length === 0).toBeTruthy(); // Create New Empty Wish List
+          expect(validateSetCookie({ cookieObj: cookieObj.wish, isExpired: false })).toBeTruthy();
+        });
+    });
+    it('Creates new Wish Cookie, when there is No Valid Wish Cookie in request, with Auth Cookie of who having Wish Info', async () => {
+      const resToken: TokenForWish = {
+        itemIdList: [1],
+      };
+      const resBody: GetMyCartRes = {
+        goods: [
+          {
+            id: 0,
+            name: '',
+            titleImage: '',
+            price: 0,
+            provider: '',
+            options: [],
+            shipping: { method: '', price: 0, canBundle: true },
+          },
+        ],
+      };
+      return await request(app)
+        .get('/api/mycart')
+        .set('Content-Type', 'application/json')
+        .set('Cookie', [`wish=INVALID`, `auth=${userInfo['Valid@Test.Wish'].auth}`])
+        .send()
+        .expect(200)
+        .then(res => {
+          expect(isConformToInterface(res.body, resBody)).toBeTruthy();
+          expect(res.body.goods.length !== 0).toBeTruthy(); // Not Empty Item List
+
+          // Test Cookie
+          const cookieObj = decodeSetCookie(res.header['set-cookie']);
+          const { Payload: wishPayload } = cookieObj.wish;
+          expect(isConformToInterface(wishPayload, resToken)).toBeTruthy();
+          const wishToken = wishPayload as TokenForWish;
+          expect(wishToken.itemIdList.length === 0).toBeTruthy(); // Create New Empty Wish List
+          expect(validateSetCookie({ cookieObj: cookieObj.wish, isExpired: false })).toBeTruthy();
+        });
+    });
+    it('Get Cart only by Wish List in Cookie, when there is Valid Wish Cookie in request, with Auth Cookie of who having No Wish Info', async () => {
+      const unsorteditemIdList: ItemIdList = [1, 2, 4, 10, 5, 3, 9]; // 1부터 countOfItem까지 Item ID가 존재한다고 가정한다.
+      const resToken: TokenForWish = {
+        itemIdList: [1],
+      };
+      const resBody: GetMyCartRes = {
+        goods: [
+          {
+            id: 0,
+            name: '',
+            titleImage: '',
+            price: 0,
+            provider: '',
+            options: [],
+            shipping: { method: '', price: 0, canBundle: true },
+          },
+        ],
+      };
+      return await request(app)
+        .get('/api/mycart')
+        .set('Content-Type', 'application/json')
+        .set('Cookie', [
+          `wish=${signJWTForWish({ itemIdList: unsorteditemIdList })}`,
+          `auth=${userInfo['Valid@No.Cash'].auth}`,
+        ])
+        .send()
+        .expect(200)
+        .then(res => {
+          expect(isConformToInterface(res.body, resBody)).toBeTruthy();
+          const resItemIdList = res.body.goods.map((item: ItemForm) => item.id);
+          const sortedItemIdList = [...unsorteditemIdList];
+          sortedItemIdList.sort((a, b) => a - b);
+          expect(sortedItemIdList).toMatchObject(resItemIdList); // 응답되는 list는 항상 id 기준 오름차순을 유지한다.
+
+          // Test Cookie
+          const cookieObj = decodeSetCookie(res.header['set-cookie']);
+          const { Payload: wishPayload } = cookieObj.wish;
+          expect(isConformToInterface(wishPayload, resToken)).toBeTruthy();
+          const wishToken = wishPayload as TokenForWish;
+          expect(wishToken.itemIdList).toMatchObject(sortedItemIdList); // 응답되는 list는 항상 id 기준 오름차순을 유지한다.
+          expect(validateSetCookie({ cookieObj: cookieObj.wish, isExpired: false })).toBeTruthy();
+        });
+    });
+    xit('Get Cart with Merged Cookie, when there is Valid Wish Cookie in request, with Auth Cookie of who having Wish Info', async () => {
+      const resToken: TokenForWish = {
+        itemIdList: [1],
+      };
+      const resBody: GetMyCartRes = {
+        goods: [
+          {
+            id: 0,
+            name: '',
+            titleImage: '',
+            price: 0,
+            provider: '',
+            options: [],
+            shipping: { method: '', price: 0, canBundle: true },
+          },
+        ],
+      };
+      return await request(app)
+        .get('/api/mycart')
+        .set('Content-Type', 'application/json')
+        .set('Cookie', [`wish=INVALID`, `auth=${userInfo['Valid@Test.Wish'].auth}`])
+        .send()
+        .expect(200)
+        .then(res => {
+          expect(isConformToInterface(res.body, resBody)).toBeTruthy();
+          expect(res.body.goods.length !== 0).toBeTruthy(); // Not Empty Item List
+
+          // Test Cookie
+          const cookieObj = decodeSetCookie(res.header['set-cookie']);
           const { Payload: wishPayload } = cookieObj.wish;
           expect(isConformToInterface(wishPayload, resToken)).toBeTruthy();
           const wishToken = wishPayload as TokenForWish;
