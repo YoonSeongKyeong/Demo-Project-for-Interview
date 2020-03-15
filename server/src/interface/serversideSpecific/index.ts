@@ -292,7 +292,7 @@ export type DecodeSetCookieInput = string[];
 
 export type DecodeSetCookieForm = {
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie
-  Payload: TokenForAuth | TokenForWish;
+  Payload: TokenForAuth | TokenForWish | undefined;
   Expires?: Date;
   'Max-Age'?: number;
   Domain?: string;
