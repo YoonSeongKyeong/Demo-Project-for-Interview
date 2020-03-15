@@ -11,7 +11,6 @@ import { signJWTForWish } from '../utils/signJWT';
 // 장바구니 불러오기
 
 export async function getMyCart(request: Request, response: Response): Promise<void> {
-  debugger;
   let resBody: GetMyCartRes;
 
   const userService = new UserService();

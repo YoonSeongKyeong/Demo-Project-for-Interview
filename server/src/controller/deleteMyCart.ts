@@ -10,7 +10,6 @@ import { signJWTForWish } from '../utils/signJWT';
 // 장바구니 삭제
 
 export async function deleteMyCart(request: Request, response: Response): Promise<void> {
-  debugger;
   const reqBody: DeleteMyCartReq = { itemIdList: request.body.itemIdList }; // interface 외의 정보 제거
   let resBody: DeleteMyCartRes;
 

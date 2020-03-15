@@ -9,7 +9,6 @@ import { configs } from '../utils/configs';
 // 상품들을 구매
 
 export async function purchaseItems(request: Request, response: Response): Promise<void> {
-  debugger;
   let reqBody: PurchaseItemReq;
   let resBody: PurchaseItemRes;
 

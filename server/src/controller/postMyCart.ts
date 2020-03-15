@@ -10,7 +10,6 @@ import { signJWTForWish } from '../utils/signJWT';
 // 장바구니 추가
 
 export async function postMyCart(request: Request, response: Response): Promise<void> {
-  debugger;
   const reqBody: PostMyCartReq = { itemIdList: request.body.itemIdList };
   let resBody: PostMyCartRes;
 

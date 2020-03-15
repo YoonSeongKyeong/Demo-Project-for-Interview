@@ -5,7 +5,6 @@ import { ItemService } from '../service/ItemService';
 // 상품 불러오기
 
 export async function getItems(request: Request, response: Response): Promise<void> {
-  debugger;
   let reqBody: GetItemsReq;
   let resBody: GetItemsRes;
 
