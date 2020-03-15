@@ -44,13 +44,13 @@ export async function getMyCart(request: Request, response: Response): Promise<v
 
       if (id && (await userService.isValidUser(id))) {
         // 로그인이 된 상황이라면 자신의 Wish에 장바구니 토큰의 목록을 동기화한 후 Wish목록의 상품들을 가져온다.
-        itemIdList = await wishService.addItemIdListOfUserReturnsValidOne({
+        await wishService.addItemIdListOfUser({
           itemIdList,
           userId: id,
         }); // valid한 상품의 itemIdList를 return한다. local장바구니->유저 wish DB 는 가능하지만, 유저 wish DB -> local장바구니 불가능 (보안 및 사생활 보호)
-        goods = await itemService.getItemFormListByItemIdList(
-          await wishService.getItemIdListOfUser({ userId: id }),
-        );
+        const mergedItemIdList = await wishService.getItemIdListOfUser({ userId: id });
+        goods = await itemService.getItemFormListByItemIdList(mergedItemIdList);
+        itemIdList = itemIdList.filter(id => mergedItemIdList.includes(id));
       } else {
         throw new Error('Invalid User Id');
       }
