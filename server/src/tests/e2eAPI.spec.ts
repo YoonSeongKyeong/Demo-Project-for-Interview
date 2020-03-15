@@ -11,6 +11,7 @@ import {
   TestSetUp_UserAuthObj,
   TokenForWish,
   ItemIdList,
+  TestSetUp_ItemObj,
 } from '../interface/serversideSpecific';
 import { prepareTestData } from '../utils/prepareTestData';
 import { isConformToInterface } from '../utils/isConformToInterface';
@@ -23,10 +24,13 @@ import {
   PostMyCartReq,
   DeleteMyCartReq,
   DeleteMyCartRes,
+  PurchaseItemReq,
+  PurchaseItemRes,
 } from '../interface/api';
 import { decodeSetCookie } from '../utils/decodeSetCookie';
 import { signJWTForWish } from '../utils/signJWT';
 import { validateSetCookie } from '../utils/validateSetCookie';
+import { getTotalPriceByItemFormList } from '../utils/getTotalPrice';
 
 // declare server core variables
 let app: Application;
@@ -35,6 +39,7 @@ let httpServer: http.Server; // key of closing server
 
 let userInfo: TestSetUp_UserAuthObj;
 let countOfItems: number;
+let itemObj: TestSetUp_ItemObj;
 
 const setUpRoutine = async (): Promise<void> => {
   setConfigure();
@@ -53,6 +58,7 @@ const refreshRoutine = async (): Promise<void> => {
   const preprareTestDataOutput = await prepareTestData();
   userInfo = preprareTestDataOutput.userAuthObj;
   countOfItems = preprareTestDataOutput.countOfItems;
+  itemObj = preprareTestDataOutput.itemObj;
 };
 
 const closeRoutine = async (): Promise<void> => {
@@ -84,7 +90,7 @@ describe('Integration API Test: ', () => {
   // Test cases
   // -------------------------------------------------------------------------
 
-  xdescribe('GetItems', () => {
+  describe('GetItems', () => {
     it('GET all named items without specified query', async () => {
       const reqBody: GetItemsReq = {};
       const resBody: GetItemsRes = {
@@ -454,7 +460,7 @@ describe('Integration API Test: ', () => {
         });
     });
   });
-  xdescribe('GetMyCart', () => {
+  describe('GetMyCart', () => {
     it('Creates new Wish Cookie Responding with Empty Item List, when there is No Valid Wish Cookie in request, No Auth Cookie', async () => {
       const resToken: TokenForWish = {
         itemIdList: [1],
@@ -591,7 +597,6 @@ describe('Integration API Test: ', () => {
           },
         ],
       };
-      debugger;
       return await request(app)
         .get('/api/mycart')
         .set('Content-Type', 'application/json')
@@ -959,7 +964,7 @@ describe('Integration API Test: ', () => {
         });
     });
   });
-  xdescribe('PostMyCarts', () => {
+  describe('PostMyCarts', () => {
     it('Creates new Wish Cookie Responding with posted Item Id List, not filtered but sorted, when there is No Valid Wish Cookie in request, No Auth Cookie', async () => {
       const unfiltereditemIdAddList: ItemIdList = [8, 1, 2, 9988999, -51, 0, 4, 5, 7, 3, 22, 13]; // 1부터 countOfItem까지 Item ID가 존재한다고 가정한다.
       const resToken: TokenForWish = {
@@ -1082,7 +1087,6 @@ describe('Integration API Test: ', () => {
       const resBody: PostMyCartRes = {
         isSuccess: true,
       };
-      debugger;
       return await request(app)
         .post('/api/mycart')
         .set('Content-Type', 'application/json')
@@ -1544,7 +1548,6 @@ describe('Integration API Test: ', () => {
       const resBody: DeleteMyCartRes = {
         isSuccess: true,
       };
-      debugger;
       return await request(app)
         .delete('/api/mycart')
         .set('Content-Type', 'application/json')
@@ -1865,26 +1868,199 @@ describe('Integration API Test: ', () => {
         });
     });
   });
-  xdescribe('PurchaseItems', () => {
-    it('descriptive test name', async () => {
-      //   const reqBody = {};
-      //   return await request(app)
-      //     .get('/api/~~~')
-      //     .query({ reqBody: JSON.stringify(reqBody) })
-      //     .set('Content-Type', 'application/json')
-      //     .set('Cookie', `token=${'user-jwt'}`)
-      //     .send()
-      //     .expect(404)
-      //     .then(async res => {
-      //       // parse cookie
-      //       const parseCookie = res.header['set-cookie'][0]
-      //         .split(',')
-      //         .map((item: string) => item.split(';')[0]);
-      //       const [key] = parseCookie[0].split('=');
-      //       const expiration = new Date(parseCookie[1]).getTime();
-      //       expect(expiration).toBeLessThan(Date.now()); // cleared
-      //       expect(key).toEqual('token');
-      //     });
+  describe('PurchaseItems', () => {
+    xit('reject purchase, when there is No Auth Cookie', async () => {
+      const purchaseItemFormList: ItemForm[] = [
+        {
+          id: 1,
+          name: 'Python Hood T-Shirts',
+          titleImage: '',
+          price: 20000,
+          provider: 'StyleShare',
+          options: [
+            { id: 1, color: 'yellow', size: 'S', stock: 5 },
+            { id: 2, color: 'yellow', size: 'M', stock: 5 },
+          ],
+          shipping: { method: 'FREE', price: 0, canBundle: true },
+        },
+      ];
+      const reqBody: PurchaseItemReq = {
+        goods: purchaseItemFormList,
+      };
+      const resBody: PurchaseItemRes = {
+        isSuccess: true,
+        price: 0,
+      };
+      return await request(app)
+        .post('/api/items/purchase')
+        .set('Content-Type', 'application/json')
+        .send(reqBody)
+        .expect(401)
+        .then(res => {
+          expect(isConformToInterface(res.body, resBody)).toBeTruthy();
+          expect(res.body.isSuccess).toBeFalsy();
+        });
+    });
+    xit('Clear auth Cookie, rejecting purchase, when there is Invalid Auth Cookie', async () => {
+      const purchaseItemFormList: ItemForm[] = [
+        {
+          id: 1,
+          name: 'Python Hood T-Shirts',
+          titleImage: '',
+          price: 20000,
+          provider: 'StyleShare',
+          options: [
+            { id: 1, color: 'yellow', size: 'S', stock: 5 },
+            { id: 2, color: 'yellow', size: 'M', stock: 5 },
+          ],
+          shipping: { method: 'FREE', price: 0, canBundle: true },
+        },
+      ];
+      const reqBody: PurchaseItemReq = {
+        goods: purchaseItemFormList,
+      };
+      const resBody: PurchaseItemRes = {
+        isSuccess: true,
+        price: 0,
+      };
+      return await request(app)
+        .post('/api/items/purchase')
+        .set('Content-Type', 'application/json')
+        .set('Cookie', [`auth=INVALID`])
+        .send(reqBody)
+        .expect(401)
+        .then(res => {
+          expect(isConformToInterface(res.body, resBody)).toBeTruthy();
+          expect(res.body.isSuccess).toBeFalsy();
+
+          // Test Cookie
+          const cookieObj = decodeSetCookie(res.header['set-cookie']);
+          expect(validateSetCookie({ cookieObj: cookieObj.auth, isExpired: true })).toBeTruthy(); // Clear Auth Cookie
+          expect(cookieObj.auth.Payload).toEqual(undefined);
+        });
+    });
+    xit('reject purchase, when there is valid Auth Cookie of who has No Cash', async () => {
+      const purchaseItemFormList: ItemForm[] = [
+        {
+          id: 1,
+          name: 'Python Hood T-Shirts',
+          titleImage: '',
+          price: 20000,
+          provider: 'StyleShare',
+          options: [
+            { id: 1, color: 'yellow', size: 'S', stock: 5 },
+            { id: 2, color: 'yellow', size: 'M', stock: 5 },
+          ],
+          shipping: { method: 'FREE', price: 0, canBundle: true },
+        },
+      ];
+      const reqBody: PurchaseItemReq = {
+        goods: purchaseItemFormList,
+      };
+      const resBody: PurchaseItemRes = {
+        isSuccess: true,
+        price: 0,
+      };
+      return await request(app)
+        .post('/api/items/purchase')
+        .set('Content-Type', 'application/json')
+        .set('Cookie', [`auth=${userInfo['Valid@No.Cash'].auth}`])
+        .send(reqBody)
+        .expect(402)
+        .then(res => {
+          expect(isConformToInterface(res.body, resBody)).toBeTruthy();
+          expect(res.body.isSuccess).toBeFalsy();
+        });
+    });
+    xit('reject purchase, when there is valid Auth Cookie of who has Enough Cash, posting Invalid ItemFormList', async () => {
+      const invalidPurchaseItemFormList: ItemForm[] = [
+        {
+          id: 1,
+          name: 'InvalidName',
+          titleImage: '',
+          price: 123,
+          provider: 'InvalidProvider',
+          options: [
+            { id: 1, color: 'InvalidColor', size: 'S', stock: 9 },
+            { id: 2, color: 'InvalidColor', size: 'M', stock: -99999 },
+          ],
+          shipping: { method: 'PREPAY', price: 99999, canBundle: true },
+        },
+      ];
+      const reqBody: PurchaseItemReq = {
+        goods: invalidPurchaseItemFormList,
+      };
+      const resBody: PurchaseItemRes = {
+        isSuccess: true,
+        price: 0,
+      };
+      return await request(app)
+        .post('/api/items/purchase')
+        .set('Content-Type', 'application/json')
+        .set('Cookie', [`auth=${userInfo['Valid@Lot.Cash'].auth}`])
+        .send(reqBody)
+        .expect(400)
+        .then(res => {
+          expect(isConformToInterface(res.body, resBody)).toBeTruthy();
+          expect(res.body.isSuccess).toBeFalsy();
+        });
+    });
+    it('accept purchase, when there is valid Auth Cookie of who has Enough Cash, posting valid ItemFormList', async () => {
+      const pyHoodItemObj = itemObj['Python Hood T-Shirts'];
+      const pyHoodItemOptions = pyHoodItemObj.options.map(option => ({
+        // break cycle
+        ...option,
+        item: null,
+      }));
+      const pyHoodItemShipping = { ...pyHoodItemObj.shipping, item: null };
+
+      const javaRoundItemObj = itemObj['JAVA Round T-Shirts'];
+      const javaRoundItemOptions = javaRoundItemObj.options.map(option => ({
+        // break cycle
+        ...option,
+        item: null,
+      }));
+      const javaRoundItemShipping = { ...javaRoundItemObj.shipping, item: null };
+
+      const validPurchaseItemFormList: ItemForm[] = [
+        {
+          id: pyHoodItemObj.id,
+          name: pyHoodItemObj.name,
+          titleImage: '',
+          price: pyHoodItemObj.price,
+          provider: pyHoodItemObj.provider.name,
+          options: pyHoodItemOptions,
+          shipping: pyHoodItemShipping,
+        },
+        {
+          id: javaRoundItemObj.id,
+          name: javaRoundItemObj.name,
+          titleImage: '',
+          price: javaRoundItemObj.price,
+          provider: javaRoundItemObj.provider.name,
+          options: javaRoundItemOptions,
+          shipping: javaRoundItemShipping,
+        },
+      ];
+      const { totalPrice } = getTotalPriceByItemFormList(validPurchaseItemFormList);
+      const reqBody: PurchaseItemReq = {
+        goods: validPurchaseItemFormList,
+      };
+      const resBody: PurchaseItemRes = {
+        isSuccess: true,
+        price: 0,
+      };
+      return await request(app)
+        .post('/api/items/purchase')
+        .set('Content-Type', 'application/json')
+        .set('Cookie', [`auth=${userInfo['Valid@Lot.Cash'].auth}`])
+        .send(reqBody)
+        .expect(200)
+        .then(res => {
+          expect(isConformToInterface(res.body, resBody)).toBeTruthy();
+          expect(res.body.isSuccess).toBeTruthy();
+          expect(res.body.price).toEqual(totalPrice);
+        });
     });
   });
 });
