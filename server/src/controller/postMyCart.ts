@@ -49,10 +49,10 @@ export async function postMyCart(request: Request, response: Response): Promise<
 
       if (id && (await userService.isValidUser(id))) {
         // 로그인이 된 상황이라면 자신의 Wish에 상품들을 추가한다.
-        itemIdList = await wishService.addItemIdListOfUserReturnsValidOne({
+        await wishService.addItemIdListOfUser({
           itemIdList,
           userId: id,
-        }); // valid한 상품의 itemIdList를 return한다. local장바구니->유저 wish DB 는 가능하지만, 유저 wish DB -> local장바구니 불가능 (보안 및 사생활 보호)
+        });
       } else {
         throw new Error('Invalid User Id');
       }

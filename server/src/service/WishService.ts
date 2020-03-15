@@ -7,8 +7,8 @@ import {
   CreateWishEntity,
   WishService_DeleteItemIdListOfUserInput,
   WishService_DeleteItemIdListOfUserOutput,
-  WishService_AddItemIdListOfUserReturnsValidOneInput,
-  WishService_AddItemIdListOfUserReturnsValidOneOutput,
+  WishService_AddItemIdListOfUserInput,
+  WishService_AddItemIdListOfUserOutput,
 } from '../interface/serversideSpecific';
 import { User } from '../entity/User';
 import { Item } from '../entity/Item';
@@ -35,15 +35,13 @@ export class WishService {
     return getItemIdObj.map(idObj => idObj.id);
   };
 
-  addItemIdListOfUserReturnsValidOne = async ({
+  addItemIdListOfUser = async ({
     itemIdList,
     userId,
-  }: WishService_AddItemIdListOfUserReturnsValidOneInput): Promise<
-    WishService_AddItemIdListOfUserReturnsValidOneOutput
-  > => {
+  }: WishService_AddItemIdListOfUserInput): Promise<WishService_AddItemIdListOfUserOutput> => {
     if (itemIdList.length === 0) {
       // 만약 itemIdList가 비어있다면 추가 작업이 필요 없으므로 바로 return한다.
-      return [];
+      return Promise.resolve();
     }
     const [getItemIdObj, getUserById] = await Promise.all([
       await this.wishRepository // 유저 장바구니에 등록된 싱픔 Id 리스트 와 유저 객체를 가져온다.
@@ -90,7 +88,6 @@ export class WishService {
         return this.wishRepository.save(newWish);
       }),
     );
-    return getListOfItemsToAdd.map(item => item.id); // 유효한 상품들의 itemIdList를 다시 전송한다.
   };
   deleteItemIdListOfUser = async ({
     itemIdList,

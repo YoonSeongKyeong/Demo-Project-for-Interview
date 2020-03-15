@@ -185,9 +185,9 @@ export type WishService_GetItemIdListOfUserInput = UserIdInput;
 
 export type WishService_GetItemIdListOfUserOutput = ItemIdList;
 
-export type WishService_AddItemIdListOfUserReturnsValidOneInput = TokenForWish & UserIdInput;
+export type WishService_AddItemIdListOfUserInput = TokenForWish & UserIdInput;
 
-export type WishService_AddItemIdListOfUserReturnsValidOneOutput = ItemIdList;
+export type WishService_AddItemIdListOfUserOutput = void;
 
 export type WishService_DeleteItemIdListOfUserInput = TokenForWish & UserIdInput;
 
