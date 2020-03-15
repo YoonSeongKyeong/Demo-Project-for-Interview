@@ -447,7 +447,7 @@ describe('Integration API Test: ', () => {
     });
   });
   describe('GetMyCart', () => {
-    xit('Creates new Wish Cookie Responding with Empty Item List, when there is No Valid Wish Cookie in request, No Auth Cookie', async () => {
+    it('Creates new Wish Cookie Responding with Empty Item List, when there is No Valid Wish Cookie in request, No Auth Cookie', async () => {
       const resToken: TokenForWish = {
         itemIdList: [1],
       };
@@ -483,7 +483,50 @@ describe('Integration API Test: ', () => {
           expect(validateSetCookie({ cookieObj: cookieObj.wish, isExpired: false })).toBeTruthy();
         });
     });
-    xit('Get Cart only by Wish List in Cookie, when there is valid Wish Cookie in request, No Auth Cookie', async () => {
+    it('Get Cart of filtered Items, only by Wish List in Cookie, when there is valid Wish Cookie in request: itemIdList having not registered Id, No Auth Cookie', async () => {
+      const unfiltereditemIdList: ItemIdList = [1, 2, -51, 4, 10, 5, 3, 9, -3, 0, 99999999, -7]; // 1부터 countOfItem까지 Item ID가 존재한다고 가정한다.
+      const resToken: TokenForWish = {
+        itemIdList: [1],
+      };
+      const resBody: GetMyCartRes = {
+        goods: [
+          {
+            id: 0,
+            name: '',
+            titleImage: '',
+            price: 0,
+            provider: '',
+            options: [],
+            shipping: { method: '', price: 0, canBundle: true },
+          },
+        ],
+      };
+      return await request(app)
+        .get('/api/mycart')
+        .set('Content-Type', 'application/json')
+        .set('Cookie', [`wish=${signJWTForWish({ itemIdList: unfiltereditemIdList })}`])
+        .send()
+        .expect(200)
+        .then(res => {
+          expect(isConformToInterface(res.body, resBody)).toBeTruthy();
+          const resItemIdList = res.body.goods.map((item: ItemForm) => item.id);
+          expect(unfiltereditemIdList).not.toMatchObject(resItemIdList);
+          const sortedItemIdList = [
+            ...unfiltereditemIdList.filter(id => id <= countOfItems && id > 0),
+          ];
+          sortedItemIdList.sort((a, b) => a - b);
+          expect(sortedItemIdList).toMatchObject(resItemIdList); // 응답되는 list는 항상 id 기준 오름차순을 유지한다.
+
+          // Test Cookie
+          const cookieObj = decodeSetCookie(res.header['set-cookie']);
+          const { Payload } = cookieObj.wish;
+          expect(isConformToInterface(Payload, resToken)).toBeTruthy();
+          const token = Payload as TokenForWish;
+          expect(token.itemIdList).not.toMatchObject(sortedItemIdList); // Auth되지 못한 상태로 GetMyCart는 wish쿠키의 itemIdList를 valid하게 만들지 못한다.
+          expect(validateSetCookie({ cookieObj: cookieObj.wish, isExpired: false })).toBeTruthy();
+        });
+    });
+    it('Get Cart only by Wish List in Cookie, when there is valid Wish Cookie in request, No Auth Cookie', async () => {
       const unsorteditemIdList: ItemIdList = [1, 2, 4, 10, 5, 3, 9]; // 1부터 countOfItem까지 Item ID가 존재한다고 가정한다.
       const resToken: TokenForWish = {
         itemIdList: [1],
@@ -523,50 +566,7 @@ describe('Integration API Test: ', () => {
           expect(validateSetCookie({ cookieObj: cookieObj.wish, isExpired: false })).toBeTruthy();
         });
     });
-    xit('Get Cart of filtered Items, only by Wish List in Cookie, when there is valid Wish Cookie in request: itemIdList having not registered Id, No Auth Cookie', async () => {
-      const unfiltereditemIdList: ItemIdList = [1, 2, -51, 4, 10, 5, 3, 9, -3, 0, 99999999, -7]; // 1부터 countOfItem까지 Item ID가 존재한다고 가정한다.
-      const resToken: TokenForWish = {
-        itemIdList: [1],
-      };
-      const resBody: GetMyCartRes = {
-        goods: [
-          {
-            id: 0,
-            name: '',
-            titleImage: '',
-            price: 0,
-            provider: '',
-            options: [],
-            shipping: { method: '', price: 0, canBundle: true },
-          },
-        ],
-      };
-      return await request(app)
-        .get('/api/mycart')
-        .set('Content-Type', 'application/json')
-        .set('Cookie', [`wish=${signJWTForWish({ itemIdList: unfiltereditemIdList })}`])
-        .send()
-        .expect(200)
-        .then(res => {
-          expect(isConformToInterface(res.body, resBody)).toBeTruthy();
-          const resItemIdList = res.body.goods.map((item: ItemForm) => item.id);
-          expect(unfiltereditemIdList).not.toMatchObject(resItemIdList);
-          const sortedItemIdList = [
-            ...unfiltereditemIdList.filter(id => id <= countOfItems && id > 0),
-          ];
-          sortedItemIdList.sort((a, b) => a - b);
-          expect(sortedItemIdList).toMatchObject(resItemIdList); // 응답되는 list는 항상 id 기준 오름차순을 유지한다.
-
-          // Test Cookie
-          const cookieObj = decodeSetCookie(res.header['set-cookie']);
-          const { Payload } = cookieObj.wish;
-          expect(isConformToInterface(Payload, resToken)).toBeTruthy();
-          const token = Payload as TokenForWish;
-          expect(token.itemIdList).not.toMatchObject(sortedItemIdList); // GetMyCart는 wish쿠키의 unregistered id를 제거해주지 못한다. (registered id의 기준 x)
-          expect(validateSetCookie({ cookieObj: cookieObj.wish, isExpired: false })).toBeTruthy();
-        });
-    });
-    xit('Creates new Wish Cookie Responding with Empty Item List, Clearing Auth Cookie, when there is No Valid Wish Cookie in request, with Invalid Auth Cookie', async () => {
+    it('Creates new Wish Cookie Responding with Empty Item List, Clearing Auth Cookie, when there is No Valid Wish Cookie in request, with Invalid Auth Cookie', async () => {
       const resToken: TokenForWish = {
         itemIdList: [1],
       };
@@ -641,7 +641,7 @@ describe('Integration API Test: ', () => {
           expect(validateSetCookie({ cookieObj: cookieObj.wish, isExpired: false })).toBeTruthy();
         });
     });
-    it('Creates new Wish Cookie, when there is No Valid Wish Cookie in request, with Auth Cookie of who having Wish Info', async () => {
+    it('Creates new Wish Cookie Responding with registered Wish List, when there is No Valid Wish Cookie in request, with Auth Cookie of who having Wish Info', async () => {
       const resToken: TokenForWish = {
         itemIdList: [1],
       };
@@ -666,7 +666,7 @@ describe('Integration API Test: ', () => {
         .expect(200)
         .then(res => {
           expect(isConformToInterface(res.body, resBody)).toBeTruthy();
-          expect(res.body.goods.length !== 0).toBeTruthy(); // Not Empty Item List
+          expect(res.body.goods.length !== 0).toBeTruthy(); // 계정에 등록된 Item List
 
           // Test Cookie
           const cookieObj = decodeSetCookie(res.header['set-cookie']);
@@ -677,7 +677,55 @@ describe('Integration API Test: ', () => {
           expect(validateSetCookie({ cookieObj: cookieObj.wish, isExpired: false })).toBeTruthy();
         });
     });
-    it('Get Cart only by Wish List in Cookie, when there is Valid Wish Cookie in request, with Auth Cookie of who having No Wish Info', async () => {
+    it('Get Cart of filtered Items, only by Wish List in Cookie, Clearing Auth Cookie, when there is valid Wish Cookie in request: itemIdList having not registered Id, with Invalid Auth Cookie', async () => {
+      const unfiltereditemIdList: ItemIdList = [1, 2, -51, 4, 10, 5, 3, 9, -3, 0, 99999999, -7]; // 1부터 countOfItem까지 Item ID가 존재한다고 가정한다.
+      const resToken: TokenForWish = {
+        itemIdList: [1],
+      };
+      const resBody: GetMyCartRes = {
+        goods: [
+          {
+            id: 0,
+            name: '',
+            titleImage: '',
+            price: 0,
+            provider: '',
+            options: [],
+            shipping: { method: '', price: 0, canBundle: true },
+          },
+        ],
+      };
+      return await request(app)
+        .get('/api/mycart')
+        .set('Content-Type', 'application/json')
+        .set('Cookie', [
+          `wish=${signJWTForWish({ itemIdList: unfiltereditemIdList })}`,
+          `auth=INVALID`,
+        ])
+        .send()
+        .expect(200)
+        .then(res => {
+          expect(isConformToInterface(res.body, resBody)).toBeTruthy();
+          const resItemIdList = res.body.goods.map((item: ItemForm) => item.id);
+          expect(unfiltereditemIdList).not.toMatchObject(resItemIdList);
+          const sortedItemIdList = [
+            ...unfiltereditemIdList.filter(id => id <= countOfItems && id > 0),
+          ];
+          sortedItemIdList.sort((a, b) => a - b);
+          expect(sortedItemIdList).toMatchObject(resItemIdList); // 응답되는 list는 항상 id 기준 오름차순을 유지한다.
+
+          // Test Cookie
+          const cookieObj = decodeSetCookie(res.header['set-cookie']);
+          const { Payload } = cookieObj.wish;
+          expect(isConformToInterface(Payload, resToken)).toBeTruthy();
+          const token = Payload as TokenForWish;
+          expect(token.itemIdList).not.toMatchObject(sortedItemIdList); // Auth되지 못한 상태로 GetMyCart는 wish쿠키의 itemIdList를 valid하게 만들지 못한다.
+          expect(validateSetCookie({ cookieObj: cookieObj.wish, isExpired: false })).toBeTruthy();
+          expect(validateSetCookie({ cookieObj: cookieObj.auth, isExpired: true })).toBeTruthy(); // Clear Auth Cookie
+          expect(cookieObj.auth.Payload).toEqual(undefined);
+        });
+    });
+    it('Get Cart of Items, only by Wish List in Cookie, Clearing Auth Cookie, when there is valid Wish Cookie in request, with Invalid Auth Cookie', async () => {
       const unsorteditemIdList: ItemIdList = [1, 2, 4, 10, 5, 3, 9]; // 1부터 countOfItem까지 Item ID가 존재한다고 가정한다.
       const resToken: TokenForWish = {
         itemIdList: [1],
@@ -700,7 +748,7 @@ describe('Integration API Test: ', () => {
         .set('Content-Type', 'application/json')
         .set('Cookie', [
           `wish=${signJWTForWish({ itemIdList: unsorteditemIdList })}`,
-          `auth=${userInfo['Valid@No.Cash'].auth}`,
+          `auth=INVALID`,
         ])
         .send()
         .expect(200)
@@ -713,14 +761,17 @@ describe('Integration API Test: ', () => {
 
           // Test Cookie
           const cookieObj = decodeSetCookie(res.header['set-cookie']);
-          const { Payload: wishPayload } = cookieObj.wish;
-          expect(isConformToInterface(wishPayload, resToken)).toBeTruthy();
-          const wishToken = wishPayload as TokenForWish;
-          expect(wishToken.itemIdList).toMatchObject(sortedItemIdList); // 응답되는 list는 항상 id 기준 오름차순을 유지한다.
+          const { Payload } = cookieObj.wish;
+          expect(isConformToInterface(Payload, resToken)).toBeTruthy();
+          const token = Payload as TokenForWish;
+          expect(token.itemIdList).toMatchObject(sortedItemIdList); // 응답되는 list는 항상 id 기준 오름차순을 유지한다.
           expect(validateSetCookie({ cookieObj: cookieObj.wish, isExpired: false })).toBeTruthy();
+          expect(validateSetCookie({ cookieObj: cookieObj.auth, isExpired: true })).toBeTruthy(); // Clear Auth Cookie
+          expect(cookieObj.auth.Payload).toEqual(undefined);
         });
     });
-    xit('Get Cart with Merged Cookie, when there is Valid Wish Cookie in request, with Auth Cookie of who having Wish Info', async () => {
+    it('Get Cart of filtered Items, only by Wish List in Cookie, when there is valid Wish Cookie in request: itemIdList having not registered Id, with Auth Cookie of who having No Wish Info', async () => {
+      const unfiltereditemIdList: ItemIdList = [1, 2, -51, 4, 10, 5, 3, 9, -3, 0, 99999999, -7]; // 1부터 countOfItem까지 Item ID가 존재한다고 가정한다.
       const resToken: TokenForWish = {
         itemIdList: [1],
       };
@@ -740,19 +791,162 @@ describe('Integration API Test: ', () => {
       return await request(app)
         .get('/api/mycart')
         .set('Content-Type', 'application/json')
-        .set('Cookie', [`wish=INVALID`, `auth=${userInfo['Valid@Test.Wish'].auth}`])
+        .set('Cookie', [
+          `wish=${signJWTForWish({ itemIdList: unfiltereditemIdList })}`,
+          `auth=${userInfo['Valid@Lot.Cash'].auth}`,
+        ])
         .send()
         .expect(200)
         .then(res => {
           expect(isConformToInterface(res.body, resBody)).toBeTruthy();
-          expect(res.body.goods.length !== 0).toBeTruthy(); // Not Empty Item List
+          const resItemIdList = res.body.goods.map((item: ItemForm) => item.id);
+          expect(unfiltereditemIdList).not.toMatchObject(resItemIdList);
+          const sortedItemIdList = [
+            ...unfiltereditemIdList.filter(id => id <= countOfItems && id > 0),
+          ];
+          sortedItemIdList.sort((a, b) => a - b);
+          expect(sortedItemIdList).toMatchObject(resItemIdList); // 응답되는 list는 항상 id 기준 오름차순을 유지한다.
 
           // Test Cookie
           const cookieObj = decodeSetCookie(res.header['set-cookie']);
-          const { Payload: wishPayload } = cookieObj.wish;
-          expect(isConformToInterface(wishPayload, resToken)).toBeTruthy();
-          const wishToken = wishPayload as TokenForWish;
-          expect(wishToken.itemIdList.length === 0).toBeTruthy(); // Create New Empty Wish List
+          const { Payload } = cookieObj.wish;
+          expect(isConformToInterface(Payload, resToken)).toBeTruthy();
+          const token = Payload as TokenForWish;
+          expect(token.itemIdList).toMatchObject(sortedItemIdList); // Auth된 상태로 GetMyCart는 wish쿠키의 itemIdList를 valid하게 만들어준다.
+          expect(validateSetCookie({ cookieObj: cookieObj.wish, isExpired: false })).toBeTruthy();
+        });
+    });
+    it('Get Cart of filtered Items, Wish List in Cookie and registered Wish List merge into one, when there is valid Wish Cookie in request: itemIdList having not registered Id, with Auth Cookie of who having Wish Info', async () => {
+      const unfiltereditemIdList: ItemIdList = [1, 2, -51, 4, 10, 5, 3, 9, -3, 0, 99999999, -7]; // 1부터 countOfItem까지 Item ID가 존재한다고 가정한다.
+      const resToken: TokenForWish = {
+        itemIdList: [1],
+      };
+      const resBody: GetMyCartRes = {
+        goods: [
+          {
+            id: 0,
+            name: '',
+            titleImage: '',
+            price: 0,
+            provider: '',
+            options: [],
+            shipping: { method: '', price: 0, canBundle: true },
+          },
+        ],
+      };
+      return await request(app)
+        .get('/api/mycart')
+        .set('Content-Type', 'application/json')
+        .set('Cookie', [
+          `wish=${signJWTForWish({ itemIdList: unfiltereditemIdList })}`,
+          `auth=${userInfo['Valid@Test.Wish'].auth}`,
+        ])
+        .send()
+        .expect(200)
+        .then(res => {
+          expect(isConformToInterface(res.body, resBody)).toBeTruthy();
+          const resItemIdList = res.body.goods.map((item: ItemForm) => item.id);
+          expect(unfiltereditemIdList).not.toMatchObject(resItemIdList);
+          const sortedItemIdList = [
+            ...unfiltereditemIdList.filter(id => id <= countOfItems && id > 0),
+          ];
+          sortedItemIdList.sort((a, b) => a - b);
+          expect(sortedItemIdList).not.toMatchObject(resItemIdList);
+          expect(sortedItemIdList.length).toBeLessThan(resItemIdList.length); // merge되었기 때문에 wish Cookie로 보낸 item들보다 많이 가져온다.
+
+          // Test Cookie
+          const cookieObj = decodeSetCookie(res.header['set-cookie']);
+          const { Payload } = cookieObj.wish;
+          expect(isConformToInterface(Payload, resToken)).toBeTruthy();
+          const token = Payload as TokenForWish;
+          expect(token.itemIdList).toMatchObject(sortedItemIdList); // Auth된 상태로 GetMyCart는 wish쿠키의 itemIdList를 valid하게 만들어준다.
+          expect(validateSetCookie({ cookieObj: cookieObj.wish, isExpired: false })).toBeTruthy();
+        });
+    });
+    it('Get Cart of Items, only by Wish List in Cookie, when there is valid Wish Cookie in request, with Auth Cookie of who having No Wish Info', async () => {
+      const unsorteditemIdList: ItemIdList = [1, 2, 4, 10, 5, 3, 9]; // 1부터 countOfItem까지 Item ID가 존재한다고 가정한다.
+      const resToken: TokenForWish = {
+        itemIdList: [1],
+      };
+      const resBody: GetMyCartRes = {
+        goods: [
+          {
+            id: 0,
+            name: '',
+            titleImage: '',
+            price: 0,
+            provider: '',
+            options: [],
+            shipping: { method: '', price: 0, canBundle: true },
+          },
+        ],
+      };
+      return await request(app)
+        .get('/api/mycart')
+        .set('Content-Type', 'application/json')
+        .set('Cookie', [
+          `wish=${signJWTForWish({ itemIdList: unsorteditemIdList })}`,
+          `auth=${userInfo['Valid@Lot.Cash'].auth}`,
+        ])
+        .send()
+        .expect(200)
+        .then(res => {
+          expect(isConformToInterface(res.body, resBody)).toBeTruthy();
+          const resItemIdList = res.body.goods.map((item: ItemForm) => item.id);
+          const sortedItemIdList = [...unsorteditemIdList];
+          sortedItemIdList.sort((a, b) => a - b);
+          expect(sortedItemIdList).toMatchObject(resItemIdList); // 응답되는 list는 항상 id 기준 오름차순을 유지한다.
+
+          // Test Cookie
+          const cookieObj = decodeSetCookie(res.header['set-cookie']);
+          const { Payload } = cookieObj.wish;
+          expect(isConformToInterface(Payload, resToken)).toBeTruthy();
+          const token = Payload as TokenForWish;
+          expect(token.itemIdList).toMatchObject(sortedItemIdList); // 응답되는 list는 항상 id 기준 오름차순을 유지한다.
+          expect(validateSetCookie({ cookieObj: cookieObj.wish, isExpired: false })).toBeTruthy();
+        });
+    });
+    it('Get Cart of Items, Wish List in Cookie and registered Wish List merge into one, when there is valid Wish Cookie in request, with Auth Cookie of who having Wish Info', async () => {
+      const unsorteditemIdList: ItemIdList = [1, 2, 4, 10, 5, 3, 9]; // 1부터 countOfItem까지 Item ID가 존재한다고 가정한다.
+      const resToken: TokenForWish = {
+        itemIdList: [1],
+      };
+      const resBody: GetMyCartRes = {
+        goods: [
+          {
+            id: 0,
+            name: '',
+            titleImage: '',
+            price: 0,
+            provider: '',
+            options: [],
+            shipping: { method: '', price: 0, canBundle: true },
+          },
+        ],
+      };
+      return await request(app)
+        .get('/api/mycart')
+        .set('Content-Type', 'application/json')
+        .set('Cookie', [
+          `wish=${signJWTForWish({ itemIdList: unsorteditemIdList })}`,
+          `auth=${userInfo['Valid@Test.Wish'].auth}`,
+        ])
+        .send()
+        .expect(200)
+        .then(res => {
+          expect(isConformToInterface(res.body, resBody)).toBeTruthy();
+          const resItemIdList = res.body.goods.map((item: ItemForm) => item.id);
+          const sortedItemIdList = [...unsorteditemIdList];
+          sortedItemIdList.sort((a, b) => a - b);
+          expect(sortedItemIdList).not.toMatchObject(resItemIdList);
+          expect(sortedItemIdList.length).toBeLessThan(resItemIdList.length); // merge되었기 때문에 wish Cookie로 보낸 item들보다 많이 가져온다.
+
+          // Test Cookie
+          const cookieObj = decodeSetCookie(res.header['set-cookie']);
+          const { Payload } = cookieObj.wish;
+          expect(isConformToInterface(Payload, resToken)).toBeTruthy();
+          const token = Payload as TokenForWish;
+          expect(token.itemIdList).toMatchObject(sortedItemIdList); // Auth된 상태로 GetMyCart는 wish쿠키의 itemIdList를 valid하게 만들어준다.
           expect(validateSetCookie({ cookieObj: cookieObj.wish, isExpired: false })).toBeTruthy();
         });
     });
