@@ -8,7 +8,9 @@ import { extractJWTForTest } from './extractJWT';
 export const decodeSetCookie = (
   setCookieSrcStrings: DecodeSetCookieInput,
 ): DecodeSetCookieOutput => {
-  debugger;
+  if (setCookieSrcStrings === undefined) {
+    return {};
+  }
   const setCookieObj: DecodeSetCookieOutput = {};
   setCookieSrcStrings.map(async srcStr => {
     const propertyList = srcStr.split(';').map(str => str.trim());
