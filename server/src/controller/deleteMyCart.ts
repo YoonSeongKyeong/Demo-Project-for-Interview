@@ -59,7 +59,11 @@ export async function deleteMyCart(request: Request, response: Response): Promis
         // 유저 정보가 없는 경우
         // id가 유효하지 않은 경우, Clear Cookie
         if (error.message !== 'cannot find token in cookie [auth]') {
-          response.clearCookie('auth', { domain: configs.CLIENT_DOMAIN, path: '/' });
+          response.clearCookie('auth', {
+            httpOnly: true,
+            domain: configs.CLIENT_DOMAIN,
+            path: '/',
+          });
         }
       } else {
         console.log('ERROR: ' + error.message);

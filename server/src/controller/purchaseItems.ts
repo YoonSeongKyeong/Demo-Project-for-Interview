@@ -59,7 +59,7 @@ export async function purchaseItems(request: Request, response: Response): Promi
       // 유저 정보가 없는 경우
       // id가 유효하지 않은 경우, Clear Cookie
       if (error.message !== 'cannot find token in cookie [auth]') {
-        response.clearCookie('auth', { domain: configs.CLIENT_DOMAIN, path: '/' });
+        response.clearCookie('auth', { httpOnly: true, domain: configs.CLIENT_DOMAIN, path: '/' });
       }
       resBody = { isSuccess: false, price: 0 }; // 요청 실패 전송
       response.status(401).json(resBody);

@@ -64,7 +64,11 @@ export async function getMyCart(request: Request, response: Response): Promise<v
         // 유저 정보가 없는 경우
         if (error.message !== 'cannot find token in cookie [auth]') {
           // id가 유효하지 않은 경우, Clear Cookie
-          response.clearCookie('auth', { domain: configs.CLIENT_DOMAIN, path: '/' });
+          response.clearCookie('auth', {
+            httpOnly: true,
+            domain: configs.CLIENT_DOMAIN,
+            path: '/',
+          });
         }
         // 장바구니 토큰만을 가지고 상품을 가져온다.
         goods = await itemService.getItemFormListByItemIdList(itemIdList);
