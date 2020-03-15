@@ -80,7 +80,7 @@ export class ItemService {
   ): Promise<ItemService_GetItemFormListByItemIdListOutput> => {
     if (itemIdList.length === 0) {
       // 만약 itemIdList가 비어있다면 바로 빈 배열을 return한다.
-      return [];
+      return Promise.resolve([]);
     }
     const getItems = await this.itemRepository.find({
       relations: ['provider', 'options', 'shipping'],
