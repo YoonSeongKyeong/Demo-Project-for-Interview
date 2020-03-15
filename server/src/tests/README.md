@@ -68,16 +68,25 @@ npm run typeorm migration:generate -- -n <Migration 파일 이름>
   *로그인이 안된 상황
     *wish 쿠키가 없는 경우
     *wish 쿠키가 있는 경우
-    *invalid한 itemId가 wish 쿠키에 있는 경우
+      *invalid한 itemId가 wish 쿠키에 있는 경우
+      *wish 쿠키의 모든 itemId가 valid한 경우
   *로그인이 된 상황
     *wish 쿠키가 없는 경우
       *invalid한 유저(ex: 삭제된 경우 status를 404로 만들어서 기록을 보존한다. 현재 User Entity에 status 구현 x)// !ISSUE 유저 삭제 정책을 기획해야 한다.
       *valid한 유저
+        *등록된 wish가 없는 경우
+        *등록된 wish가 있는 경우
     *wish 쿠키가 있는 경우
       *invalid한 유저(ex: 삭제된 경우 status를 404로 만들어서 기록을 보존한다. 현재 User Entity에 status 구현 x)// !ISSUE 유저 삭제 정책을 기획해야 한다.
-      *valid한 유저
         *invalid한 itemId가 wish 쿠키에 있는 경우
         *wish 쿠키의 모든 itemId가 valid한 경우
+      *valid한 유저
+        *invalid한 itemId가 wish 쿠키에 있는 경우
+          *등록된 wish가 없는 경우
+          *등록된 wish가 있는 경우
+        *wish 쿠키의 모든 itemId가 valid한 경우
+          *등록된 wish가 없는 경우
+          *등록된 wish가 있는 경우
 ```
 <hr>
 
