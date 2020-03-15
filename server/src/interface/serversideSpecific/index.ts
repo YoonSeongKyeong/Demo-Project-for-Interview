@@ -286,9 +286,10 @@ export type TestSetUp_UserAuthObj = { [user: string]: { user: User; auth: string
 export type TestSetUp_PrepareTestDataOutput = {
   userAuthObj: TestSetUp_UserAuthObj;
   countOfItems: number;
+  itemObj: TestSetUp_ItemObj;
 };
 
-export type DecodeSetCookieInput = string[];
+export type DecodeSetCookieInput = string[] | undefined;
 
 export type DecodeSetCookieForm = {
   // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie
