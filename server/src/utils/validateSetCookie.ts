@@ -13,16 +13,6 @@ const configOfSetCookie: ConfigOfSetCookie = {
   Secure: false,
   HttpOnly: true,
   SameSite: undefined,
-  // expect(token.itemIdList.length === 0).toBeTruthy(); // Create New Empty Wish List
-  //       expect(Secure === false).toBeTruthy();
-  //       expect(HttpOnly === true).toBeTruthy();
-  //       expect(SameSite === undefined).toBeTruthy();
-  //       expect(Domain === configs.CLIENT_DOMAIN).toBeTruthy();
-  //       expect(Path === '/').toBeTruthy();
-  //       if (!Expires) {
-  //         throw new Error('No Expires Info In Cookie');
-  //       }
-  //       expect(Expires.getTime()).toBeGreaterThan(Date.now()); // Not Cleared
 };
 
 export const validateSetCookie = ({
