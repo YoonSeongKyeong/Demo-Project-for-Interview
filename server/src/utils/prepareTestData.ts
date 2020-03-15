@@ -64,10 +64,15 @@ export const prepareTestData = async (): Promise<TestSetUp_PrepareTestDataOutput
         await Promise.all(
           options.map(async option => {
             const newOption: CreateOptionEntity = { ...option, item };
-            return await createOption(newOption);
+            const optionEntity = await createOption(newOption);
+            if (itemObj[item.name].options === undefined) {
+              itemObj[item.name].options = [];
+            }
+            itemObj[item.name].options.push(optionEntity);
           }),
         );
-        await createShipping({ ...shipping, item });
+        const shippingEntity = await createShipping({ ...shipping, item });
+        itemObj[item.name].shipping = shippingEntity;
         return;
       }),
     );
@@ -106,5 +111,5 @@ export const prepareTestData = async (): Promise<TestSetUp_PrepareTestDataOutput
     ),
   );
 
-  return { userAuthObj, countOfItems };
+  return { userAuthObj, itemObj, countOfItems };
 };
