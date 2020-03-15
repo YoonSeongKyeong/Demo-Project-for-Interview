@@ -126,6 +126,7 @@ npm run typeorm migration:generate -- -n <Migration 파일 이름>
       *충전금이 부족한 경우
       *제출한 Item Form이 유효하지 않은 경우
       *Transaction시 충돌로 인해 결제가 실패한 경우(ex: 두 transaction이 동시에 같은 item의 재고 전부 구매를 시도하는 경우. 현재 Service 및 Controller에 명시적 에러 처리 x)
+      *구매가 성공한 경우
 ```
 <hr>
 
