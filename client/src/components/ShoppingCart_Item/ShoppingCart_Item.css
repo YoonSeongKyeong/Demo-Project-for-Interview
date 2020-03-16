@@ -1,0 +1,25 @@
+.small-img {
+    width: 10rem;
+    float: left;
+}
+
+.item-info {
+    margin: 0.5rem;
+}
+
+.margin-1rem {
+    margin: 1rem;
+}
+
+.select-option {
+    margin: 1.5em;
+    width: 17.6rem;
+}
+
+.float-right {
+    float: right;
+}
+
+.clear {
+    clear: both;
+}
