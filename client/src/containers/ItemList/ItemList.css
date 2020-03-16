@@ -13,10 +13,10 @@
   margin-right: auto;
 }
 
-.normal-item{
-  margin-top: 4rem;
+.ItemList-normal-item{
+  margin-top: 1rem;
 }
 
-.normal-item + .normal-item{
-  margin-left: 4rem;
+.ItemList-normal-item + .ItemList-normal-item{
+  margin-left: 1rem;
 }
