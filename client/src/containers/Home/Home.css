@@ -13,10 +13,10 @@
     margin-right: auto;
 }
 
-.normal-item{
+.Home-normal-item{
     margin-top: 4rem;
 }
 
-.normal-item + .normal-item{
+.Home-normal-item + .Home-normal-item{
     margin-left: 4rem;
 }

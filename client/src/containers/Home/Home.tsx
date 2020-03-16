@@ -11,13 +11,15 @@ const Home: React.FC = () => {
       <Alert
         message="Home"
         type="info"
-        className="width-third-center normal-item"
+        className="width-third-center Home-normal-item"
       />
+
       <div>
-        <Button type="primary" className="normal-item">
+        <Button type="primary" className="Home-normal-item">
           <Link to="/items">ItemList</Link>
         </Button>
-        <Button type="primary" className="normal-item">
+
+        <Button type="primary" className="Home-normal-item">
           <Link to="/cart">WishList</Link>
         </Button>
       </div>
