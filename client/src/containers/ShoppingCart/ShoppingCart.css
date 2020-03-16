@@ -7,8 +7,8 @@
   left: auto;
 }
 
-.width-third-center {
-  width: 33%;
+.width-fourth-center {
+  width: 25%;
   margin-left: auto;
   margin-right: auto;
 }
@@ -17,6 +17,23 @@
   margin-top: 1rem;
 }
 
+.margin-top-1rem { 
+  margin-top: 1rem;
+}
+
+.margin-top-0-5rem { 
+  margin-top: 0.5rem;
+}
+
 .ShoppingCart-normal-item + .ShoppingCart-normal-item{
   margin-left: 1rem;
 }
+
+.align-left {
+  text-align: left;
+}
+
+.float-right {
+  float: right;
+}
+
