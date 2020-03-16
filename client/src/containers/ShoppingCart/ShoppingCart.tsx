@@ -1,6 +1,6 @@
 import React from 'react';
-import Item from '../../components/ShoppingCart_Item';
-import { Button, Alert, Tooltip } from 'antd';
+import Item from '../../components/ShoppingCart_Item/ShoppingCart_Item';
+import { Button, Alert, Tooltip, BackTop } from 'antd';
 import { HomeFilled } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import './ShoppingCart.css';
@@ -246,22 +246,25 @@ const ShoppingCart: React.FC = () => {
       <Alert
         message="ShoppingCart"
         type="info"
-        className="width-third-center normal-item"
+        className="width-third-center ShoppingCart-normal-item"
       />
 
       <Tooltip title="Home">
         <Link to="/">
           <Button
-            className="normal-item"
+            className="ShoppingCart-normal-item"
             type="danger"
             shape="circle"
             icon={<HomeFilled />}
           />
         </Link>
       </Tooltip>
+
       {goods.map(item => (
         <Item item={item} key={item.id} />
       ))}
+
+      <BackTop visibilityHeight={0} />
     </div>
   );
 };
