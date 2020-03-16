@@ -46,6 +46,9 @@
     ]
   },
   "devDependencies": {
-    "@types/react-redux": "^7.1.7"
+    "@types/react-redux": "^7.1.7",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "prettier": "^1.19.1"
   }
 }
