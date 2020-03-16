@@ -4,7 +4,23 @@
 
 <hr>
 
+## **실행 방법**
+- ### **Server 실행법**
+- - ### **/server에 config라는 설정파일 추가, config에 환경변수 설정 후 /server 에서 yarn으로 의존성 설치** 
+- - ### **/server/src/tests/migration에 Schema refresh migration file 생성 (/server/src/tests/README.md 참고)**
+- - ### **/server에서 yarn dev 실행 시 개발 서버 실행, yarn test 실행 시 테스트 실행**
+
+- ### **Client 실행법**
+- - ### **/client에서 yarn으로 의존성 설치** 
+- - ### **/client에서 yarn start 실행 시 개발 클라이언트 실행(현재 서버와 연결되지 않았음)** 
+<hr>
+
 ## **진행상황**
+- ### **Client에 대해서 ItemList Page와 WishList Page의 View와 함께 Structure을 정의 (2020.03.16)**
+- ### **Server에 대해서 High Quality & Full Path Coverage Integration Test 완성 (2020.03.15)**
+- ### **TypeORM의 getRepository시 버전 업데이트로 인한 비정상적 동작 이슈 제보, API 테스트 추가 (2020.03.14)**
+- ### **TypeORM에서 Connection이 비정상적으로 동작하는 이슈 발견, 이슈 해결 작업 (2020.03.13)**
+- ### **Server 테스트 설계 및 테스트 데이터 준비, 테스트 Setup 구현 (2020.03.12)**
 - ### **Server /Service: 90% 구현 및 결제 유틸 함수들 설계 및 구현 (2020.03.11)**
 - ### **Server /Factory: 100%, Router:90%, /Controller: 80% /Service: 30% 구현 (2020.03.10)**
 - ### **Server 구조 기획 및 폴더 구조로 layered structure 구현, ER Diagram 및 Relational Model 설계 (2020.03.09)**
