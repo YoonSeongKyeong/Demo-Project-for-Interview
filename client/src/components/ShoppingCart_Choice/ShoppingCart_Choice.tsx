@@ -61,7 +61,7 @@ const ShoppingCart_Choice: React.FC<{ item: any }> = ({ item }) => {
             <Tag color="red">Green</Tag>
           </span>
           <span className="margin-1rem">
-            <Tag color="gold">Stock</Tag>
+            <Tag color="gold">amount</Tag>
             <Tag color="gold">10</Tag>
           </span>
         </div>
