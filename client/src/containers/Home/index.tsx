@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Alert } from 'antd';
 import { Link } from 'react-router-dom';
-import './Home.css';
+import './style.css';
 
 // Home에서는 ItemList와 ShoppingCart로 갈 수 있는 링크를 제공한다
 

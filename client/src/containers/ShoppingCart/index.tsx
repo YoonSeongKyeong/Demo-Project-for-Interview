@@ -1,10 +1,10 @@
 import React from 'react';
-import Item from '../../components/ShoppingCart_Item/ShoppingCart_Item';
-import Choice from '../../components/ShoppingCart_Choice/ShoppingCart_Choice';
+import Item from '../../components/ShoppingCart_Item';
+import Choice from '../../components/ShoppingCart_Choice';
 import { Button, Alert, Tooltip, BackTop, Card, Affix, Checkbox } from 'antd';
 import { HomeFilled } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
-import './ShoppingCart.css';
+import './style.css';
 import { ItemForm } from '../../interface/api';
 
 // ShoppingCart에서는 장바구니의 상품들을 보여주고, 최종 금액을 계산해서 보여준다. 여러 개의 상품들을 구매/제거할 수 있다. 모두 선택, 모두 선택 해제 기능이 있다.

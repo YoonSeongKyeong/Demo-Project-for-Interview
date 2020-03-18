@@ -2,9 +2,9 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import './App.css';
 import 'antd/dist/antd.css';
-import ItemList from '../containers/ItemList/ItemList';
-import Home from '../containers/Home/Home';
-import ShoppingCart from '../containers/ShoppingCart/ShoppingCart';
+import ItemList from '../containers/ItemList';
+import Home from '../containers/Home';
+import ShoppingCart from '../containers/ShoppingCart';
 
 function App() {
   return (

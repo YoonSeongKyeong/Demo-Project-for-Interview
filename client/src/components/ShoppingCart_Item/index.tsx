@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Checkbox, Tag, Select, InputNumber, Button } from 'antd';
 import { ItemForm } from '../../interface/api';
-import './ShoppingCart_Item.css';
+import './style.css';
 
 const { Option } = Select;
 // ShoppingCart_Item: 상품 사진, 상품 이름, 판매자 이름, 가격 및 재고를 보여준다. 배송방식을 보여준다. 상품을 선택할 수 있다. 상품을 제거할 수 있다.

@@ -1,10 +1,18 @@
 import React from 'react';
-import Item from '../../components/ItemList_Item/ItemList_Item';
+import { useSelector, useDispatch } from 'react-redux';
 import { Button, Alert, Tooltip, Input, BackTop } from 'antd';
 import { HomeFilled } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
-import './ItemList.css';
+
+import { RootState } from '../../modules';
+import {
+  addItemToWishList,
+  getMoreItems,
+  search,
+} from '../../modules/itemList';
 import { ItemForm } from '../../interface/api';
+import Item from '../../components/ItemList_Item';
+import './style.css';
 
 const { Search } = Input;
 // ItemList에서는 검색 기능을 제공한다.
@@ -258,6 +266,26 @@ const goods: ItemForm[] = [
   },
 ];
 const ItemList: React.FC = () => {
+  // 상태를 조회합니다. 상태를 조회 할 때에는 state 의 타입을 RootState 로 지정해야합니다.
+  const items = useSelector((state: RootState) => state.itemList.items);
+  const dispatch = useDispatch(); // 디스패치 함수를 가져옵니다
+
+  // 각 액션들을 디스패치하는 함수들을 만들어줍니다
+  const onAddItemToWishList = (id: number) => {
+    // 각 Item에서 장바구니 추가 버튼에 적용
+    dispatch(addItemToWishList(id));
+  };
+
+  const onGetMoreItems = () => {
+    // componentDidMount와 scroll할 때 적용
+    dispatch(getMoreItems());
+  };
+
+  const onSearch = (query: string) => {
+    // search할 때 적용
+    dispatch(search(query));
+  };
+
   return (
     <div className="text-center align-center">
       <Alert
@@ -288,7 +316,11 @@ const ItemList: React.FC = () => {
       </div>
 
       {goods.map(item => (
-        <Item item={item} key={item.id} />
+        <Item
+          onAddItemToWishList={onAddItemToWishList}
+          item={item}
+          key={item.id}
+        />
       ))}
 
       <BackTop visibilityHeight={0} />
