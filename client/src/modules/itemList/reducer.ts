@@ -1,6 +1,17 @@
 import { ItemForm } from '../../interface/api';
-import { createReducer, getType } from 'typesafe-actions';
-import { addItemToWishListAsync, getMoreItemsAsync, searchAsync } from '.';
+import { createReducer } from 'typesafe-actions';
+import { ItemListAction } from './actions';
+import {
+  GET_MORE_ITEMS,
+  GET_MORE_ITEMS_SUCCESS,
+  GET_MORE_ITEMS_ERROR,
+  ADD_ITEM_TO_WISHLIST,
+  ADD_ITEM_TO_WISHLIST_SUCCESS,
+  ADD_ITEM_TO_WISHLIST_ERROR,
+  SEARCH,
+  SEARCH_SUCCESS,
+  SEARCH_ERROR,
+} from './types';
 
 // 이 리덕스 모듈에서 관리 할 상태의 타입을 선언합니다
 export type ItemListState = {
@@ -31,122 +42,75 @@ const initialState: ItemListState = {
 
 // 리듀서를 만듭니다
 // createReducer 는 리듀서를 쉽게 만들 수 있게 해주는 함수입니다.
-const itemList = createReducer(initialState)
-  .handleAction(
-    addItemToWishListAsync,
-    (state: ItemListState, action: { type: string; payload: undefined }) => {
-      const [request, success, failure] = [
-        addItemToWishListAsync.request,
-        addItemToWishListAsync.success,
-        addItemToWishListAsync.failure,
-      ].map(getType);
-      switch (action.type) {
-        case request:
-          return {
-            ...state,
-            requestStatus: {
-              ...state.requestStatus,
-              ADD_ITEM_TO_WISHLIST: 'LOADING',
-            },
-          };
-        case success:
-          return {
-            ...state,
-            requestStatus: {
-              ...state.requestStatus,
-              ADD_ITEM_TO_WISHLIST: 'OK',
-            },
-          };
-        case failure:
-          return {
-            ...state,
-            requestStatus: {
-              ...state.requestStatus,
-              ADD_ITEM_TO_WISHLIST: 'ERROR', // !ISSUE 이후 ERROR에 대한 Handling Action 필요
-            },
-          };
-      }
-    }
-  )
-  .handleAction(
-    getMoreItemsAsync,
-    (state: ItemListState, action: { type: string; payload: ItemForm[] }) => {
-      const [request, success, failure] = [
-        getMoreItemsAsync.request,
-        getMoreItemsAsync.success,
-        getMoreItemsAsync.failure,
-      ].map(getType);
-      switch (action.type) {
-        case request:
-          return {
-            ...state,
-            requestStatus: {
-              ...state.requestStatus,
-              GET_MORE_ITEMS: 'LOADING',
-            },
-          };
-        case success:
-          return {
-            ...state,
-            requestStatus: {
-              ...state.requestStatus,
-              GET_MORE_ITEMS: 'OK',
-            },
-            items: [...state.items, ...action.payload],
-            page: state.page + 1,
-          };
-        case failure:
-          return {
-            ...state,
-            requestStatus: {
-              ...state.requestStatus,
-              GET_MORE_ITEMS: 'ERROR', // !ISSUE 이후 ERROR에 대한 Handling Action 필요
-            },
-          };
-      }
-    }
-  )
-  .handleAction(
-    searchAsync,
-    (
-      state: ItemListState,
-      action: { type: string; payload: ItemForm[] | string }
-    ) => {
-      const [request, success, failure] = [
-        searchAsync.request,
-        searchAsync.success,
-        searchAsync.failure,
-      ].map(getType);
-      switch (action.type) {
-        case request:
-          return {
-            ...state,
-            requestStatus: {
-              ...state.requestStatus,
-              SEARCH: 'LOADING',
-            },
-            query: action.payload,
-          };
-        case success:
-          return {
-            ...state,
-            requestStatus: {
-              ...state.requestStatus,
-              SEARCH: 'OK',
-            },
-            items: [...state.items, ...(action.payload as ItemForm[])],
-            page: 0,
-          };
-        case failure:
-          return {
-            ...state,
-            requestStatus: {
-              ...state.requestStatus,
-              SEARCH: 'ERROR', // !ISSUE 이후 ERROR에 대한 Handling Action 필요
-            },
-          };
-      }
-    }
-  );
+const itemList = createReducer<ItemListState, ItemListAction>(initialState, {
+  [ADD_ITEM_TO_WISHLIST]: state => ({
+    ...state,
+    requestStatus: {
+      ...state.requestStatus,
+      ADD_ITEM_TO_WISHLIST: 'LOADING',
+    },
+  }),
+  [ADD_ITEM_TO_WISHLIST_SUCCESS]: state => ({
+    ...state,
+    requestStatus: {
+      ...state.requestStatus,
+      ADD_ITEM_TO_WISHLIST: 'OK',
+    },
+  }),
+  [ADD_ITEM_TO_WISHLIST_ERROR]: state => ({
+    ...state,
+    requestStatus: {
+      ...state.requestStatus,
+      ADD_ITEM_TO_WISHLIST: 'ERROR', // !ISSUE 이후 ERROR에 대한 Handling Action 필요
+    },
+  }),
+  [GET_MORE_ITEMS]: state => ({
+    ...state,
+    requestStatus: {
+      ...state.requestStatus,
+      GET_MORE_ITEMS: 'LOADING',
+    },
+  }),
+  [GET_MORE_ITEMS_SUCCESS]: (state, action) => ({
+    ...state,
+    requestStatus: {
+      ...state.requestStatus,
+      GET_MORE_ITEMS: 'OK',
+    },
+    items: [...state.items, ...action.payload],
+    page: state.page + 1,
+  }),
+  [GET_MORE_ITEMS_ERROR]: state => ({
+    ...state,
+    requestStatus: {
+      ...state.requestStatus,
+      GET_MORE_ITEMS: 'ERROR', // !ISSUE 이후 ERROR에 대한 Handling Action 필요
+    },
+  }),
+  [SEARCH]: (state, action) => ({
+    ...state,
+    requestStatus: {
+      ...state.requestStatus,
+      SEARCH: 'LOADING',
+    },
+    query: action.payload,
+  }),
+  [SEARCH_SUCCESS]: (state, action) => ({
+    ...state,
+    requestStatus: {
+      ...state.requestStatus,
+      SEARCH: 'OK',
+    },
+    items: [...(action.payload as ItemForm[])], // 새로 검색한 아이템들로 채운다.
+    page: 0,
+  }),
+  [SEARCH_ERROR]: state => ({
+    ...state,
+    requestStatus: {
+      ...state.requestStatus,
+      SEARCH: 'ERROR', // !ISSUE 이후 ERROR에 대한 Handling Action 필요
+    },
+  }),
+});
 
 export default itemList;

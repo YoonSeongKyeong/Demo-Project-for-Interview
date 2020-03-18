@@ -1,22 +1,36 @@
-import { createAsyncAction } from 'typesafe-actions';
+import { createAsyncAction, ActionType } from 'typesafe-actions';
 import { AxiosError } from 'axios';
 import { ItemForm } from '../../interface/api';
+import {
+  ADD_ITEM_TO_WISHLIST,
+  ADD_ITEM_TO_WISHLIST_SUCCESS,
+  ADD_ITEM_TO_WISHLIST_ERROR,
+  GET_MORE_ITEMS,
+  GET_MORE_ITEMS_SUCCESS,
+  GET_MORE_ITEMS_ERROR,
+  SEARCH,
+  SEARCH_SUCCESS,
+  SEARCH_ERROR,
+} from './types';
 
 // 액션 생성함수를 선언합니다
 export const addItemToWishListAsync = createAsyncAction(
-  'itemList/ADD_ITEM_TO_WISHLIST',
-  'itemList/ADD_ITEM_TO_WISHLIST_SUCCESS',
-  'itemList/ADD_ITEM_TO_WISHLIST_ERROR'
+  ADD_ITEM_TO_WISHLIST,
+  ADD_ITEM_TO_WISHLIST_SUCCESS,
+  ADD_ITEM_TO_WISHLIST_ERROR
 )<undefined, undefined, AxiosError>();
 
 export const getMoreItemsAsync = createAsyncAction(
-  'itemList/GET_MORE_ITEMS',
-  'itemList/GET_MORE_ITEMS_SUCCESS',
-  'itemList/GET_MORE_ITEMS_ERROR'
+  GET_MORE_ITEMS,
+  GET_MORE_ITEMS_SUCCESS,
+  GET_MORE_ITEMS_ERROR
 )<undefined, ItemForm[], AxiosError>();
 
 export const searchAsync = createAsyncAction(
-  'itemList/SEARCH',
-  'itemList/SEARCH_SUCCESS',
-  'itemList/SEARCH_ERROR'
+  SEARCH,
+  SEARCH_SUCCESS,
+  SEARCH_ERROR
 )<string, ItemForm[], AxiosError>();
+
+const actions = { addItemToWishListAsync, getMoreItemsAsync, searchAsync }; // 모든 액션 생성함수들을 actions 객체에 넣습니다
+export type ItemListAction = ActionType<typeof actions>; // ActionType 를 사용하여 모든 액션 객체들의 타입을 준비해줄 수 있습니다

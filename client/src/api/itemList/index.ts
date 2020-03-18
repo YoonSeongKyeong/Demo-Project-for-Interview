@@ -1,4 +1,5 @@
-import Axios from 'axios';
+import Axios from '../config';
+import { AxiosResponse } from 'axios';
 import {
   GetItemsReq,
   GetItemsRes,
@@ -11,13 +12,11 @@ export const postItemIdToWishList = async (itemId: number) => {
     itemIdList: [itemId],
   };
   try {
-    const { isSuccess }: PostMyCartRes = await Axios.post(
-      `api/mycart`,
-      reqBody,
-      {
-        withCredentials: true,
-      }
-    );
+    const {
+      data: { isSuccess },
+    }: AxiosResponse<PostMyCartRes> = await Axios.post(`api/mycart`, reqBody, {
+      withCredentials: true,
+    });
     if (!isSuccess) {
       // !ISSUE 나중에 어떤 오류로 requset가 성공하지 못했는지 message를 추가해서 알리는 게 좋다.
       throw new Error('Error in adding item to wish list');
@@ -35,10 +34,12 @@ export const getItems = async ({
 }: GetItemsReq) => {
   try {
     const {
-      goods: items,
-    }: GetItemsRes = await Axios.get(
+      data: { goods: items },
+    }: AxiosResponse<GetItemsRes> = await Axios.get(
       `api/items?q=${q}&offset=${offset}&limit=${limit}`,
-      { withCredentials: true }
+      {
+        withCredentials: true,
+      }
     );
     return items;
   } catch (error) {

@@ -16,10 +16,10 @@ export function addItemToWishListThunk(
 > {
   return async dispatch => {
     const { request, success, failure } = addItemToWishListAsync;
-    dispatch(request());
+    dispatch(request(undefined, null));
     try {
       await postItemIdToWishList(itemId);
-      dispatch(success());
+      dispatch(success(undefined, null));
     } catch (e) {
       dispatch(failure(e));
     }
@@ -39,7 +39,7 @@ export function getMoreItemsThunk(): ThunkAction<
       page += 1;
     }
     const { request, success, failure } = getMoreItemsAsync;
-    dispatch(request());
+    dispatch(request(undefined, undefined));
     try {
       const items = await getItems({
         q: query,
