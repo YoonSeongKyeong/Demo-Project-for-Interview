@@ -1,6 +1,6 @@
 import { createAsyncAction, ActionType, createAction } from 'typesafe-actions';
 import { AxiosError } from 'axios';
-import { ItemForm, ItemForm_Option } from '../../interface/api';
+import { ItemForm } from '../../interface/api';
 import {
   GET_ITEMS_FROM_WISHLIST,
   GET_ITEMS_FROM_WISHLIST_SUCCESS,
@@ -13,6 +13,8 @@ import {
   PURCHASE_ITEMS_ERROR,
   ADD_OPTION_TO_PURCHASELIST,
   DELETE_OPTION_FROM_PURCHASELIST,
+  addOptionToPurchaseListActionInput,
+  deleteOptionFromPurchaseListActionInput,
 } from './types';
 
 // 액션 생성함수를 선언합니다
@@ -34,21 +36,13 @@ export const purchaseItemsAsync = createAsyncAction(
   PURCHASE_ITEMS_ERROR
 )<undefined, undefined, AxiosError>();
 
-export const addOptionToPurchaseList = createAction(
-  ADD_OPTION_TO_PURCHASELIST,
-  action => {
-    return ({ itemId, option }: { itemId: number; option: ItemForm_Option }) =>
-      action({ itemId, option });
-  }
-);
+export const addOptionToPurchaseList = createAction(ADD_OPTION_TO_PURCHASELIST)<
+  addOptionToPurchaseListActionInput
+>();
 
 export const deleteOptionFromPurchaseList = createAction(
-  DELETE_OPTION_FROM_PURCHASELIST,
-  action => {
-    return ({ itemId, optionId }: { itemId: number; optionId: number }) =>
-      action({ itemId, optionId });
-  }
-);
+  DELETE_OPTION_FROM_PURCHASELIST
+)<deleteOptionFromPurchaseListActionInput>();
 
 const actions = {
   getItemsFromWishListAsync,
