@@ -105,7 +105,7 @@ const ShoppingCart: React.FC = () => {
 
   useEffect(() => {
     onGetItemsFromWishList();
-  }, []);
+  });
 
   const { totalPrice, totalShippingFee } = getTotalPriceByItemFormList(
     purchaseList

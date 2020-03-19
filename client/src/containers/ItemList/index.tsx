@@ -56,7 +56,7 @@ const ItemList: React.FC = () => {
 
   useEffect(() => {
     onGetMoreItems();
-  }, []);
+  });
 
   return (
     <div className="text-center align-center">
