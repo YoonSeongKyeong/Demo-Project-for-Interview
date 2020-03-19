@@ -162,13 +162,17 @@ const ShoppingCart: React.FC = () => {
       </Card>
 
       <Card title="Purchase List" className="align-left margin-top-1rem">
-        {purchaseList.map(item => (
-          <Choice
-            item={item}
-            key={item.id}
-            onDeleteOptionFromPurchaseList={onDeleteOptionFromPurchaseList}
-          />
-        ))}
+        {purchaseList.map(item =>
+          item.options.map((
+            option // item의 모든 option마다 Choice Component를 하나씩 Render한다.
+          ) => (
+            <Choice
+              item={{ ...item, options: [option] }}
+              key={option.id}
+              onDeleteOptionFromPurchaseList={onDeleteOptionFromPurchaseList}
+            />
+          ))
+        )}
       </Card>
 
       <BackTop visibilityHeight={0} />
