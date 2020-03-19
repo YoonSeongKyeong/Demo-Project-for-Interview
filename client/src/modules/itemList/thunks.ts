@@ -33,18 +33,16 @@ export function getMoreItemsThunk(): ThunkAction<
   ActionType<typeof getMoreItemsAsync>
 > {
   return async (dispatch, getState) => {
-    let { query, page, limit, items } = getState().itemList as ItemListState;
+    debugger;
+    let { query, page, limit } = getState().itemList as ItemListState;
     if (page === -1) {
       // 이미 items를 전부 받아온 상태를 page = -1로 정의하고 page가 -1일 때는 요청을 더 하지 않는다.
       return;
     }
-    if (items.length !== 0) {
-      // 맨 처음이 아니라면 다음 페이지를 받아온다.
-      page += 1;
-    }
     const { request, success, failure } = getMoreItemsAsync;
     dispatch(request(undefined, undefined));
     try {
+      debugger;
       const items = await getItems({
         q: query,
         offset: '' + page,
