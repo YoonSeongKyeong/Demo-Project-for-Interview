@@ -19,6 +19,7 @@ export async function isSignIn(request: Request, response: Response): Promise<vo
     }
     response.status(404).send();
   } catch (error) {
+    debugger;
     if (error.message === 'cannot find token in cookie [auth]') {
       response
         .clearCookie('auth', {
@@ -27,6 +28,7 @@ export async function isSignIn(request: Request, response: Response): Promise<vo
           path: '/',
         })
         .status(404).send;
+      return;
     }
     console.log('ERROR: ' + error.message);
     response.status(500).send(error.message);
