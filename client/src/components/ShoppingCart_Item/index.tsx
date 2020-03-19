@@ -49,18 +49,25 @@ const ShoppingCart_Item: React.FC<itemProps> = ({
     }
   };
 
+  const onChangeOption = value => {
+    setSeletedOptionIndex(value);
+    setNumOfItemsToBuy(0); // 구매할 상품 갯수도 기본값인 0으로 재설정한다.
+  };
+
   const onDelete = () => {
     onDeleteItemFromWishList(item.id);
   };
 
   const onAdd = () => {
-    onAddOptionToPurchaseList({
-      itemId: item.id,
-      option: {
-        ...item.options[selectedOptionIndex],
-        stock: numOfItemsToBuy,
-      },
-    });
+    if (numOfItemsToBuy > 0) {
+      onAddOptionToPurchaseList({
+        itemId: item.id,
+        option: {
+          ...item.options[selectedOptionIndex],
+          stock: numOfItemsToBuy,
+        },
+      });
+    }
   };
 
   return (
@@ -117,7 +124,7 @@ const ShoppingCart_Item: React.FC<itemProps> = ({
           <Select
             defaultValue={0}
             className="select-option"
-            onChange={value => setSeletedOptionIndex(value)}
+            onChange={onChangeOption}
           >
             {item.options.map((option, index) => (
               <Option value={index}>
