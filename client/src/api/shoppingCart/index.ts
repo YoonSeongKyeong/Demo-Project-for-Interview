@@ -68,6 +68,7 @@ export const purchaseItems = async (itemForm: ItemForm[]) => {
     alert(`상품 구매가 성공했습니다! 총 가격은 ${price} 입니다.`);
     return price;
   } catch (error) {
+    alert(`상품 구매가 실패했습니다.`);
     throw error;
   }
 };
