@@ -21,6 +21,7 @@ export const postItemIdToWishList = async (itemId: number) => {
       // !ISSUE 나중에 어떤 오류로 requset가 성공하지 못했는지 message를 추가해서 알리는 게 좋다.
       throw new Error('Error in adding item to wish list');
     }
+    alert('장바구니에 상품이 성공적으로 추가되었습니다!');
     return;
   } catch (error) {
     throw error;
