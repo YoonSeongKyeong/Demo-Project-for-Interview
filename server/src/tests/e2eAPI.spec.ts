@@ -1447,7 +1447,7 @@ describe('Integration API Test: ', () => {
         isSuccess: true,
       };
       return await request(app)
-        .delete('/api/mycart')
+        .post('/api/mycart/delete')
         .set('Content-Type', 'application/json')
         .set('Cookie', [`wish=INVALID`])
         .send(reqBody)
@@ -1478,7 +1478,7 @@ describe('Integration API Test: ', () => {
         isSuccess: true,
       };
       return await request(app)
-        .delete('/api/mycart')
+        .post('/api/mycart/delete')
         .set('Content-Type', 'application/json')
         .set('Cookie', [`wish=${signJWTForWish({ itemIdList: unfiltereditemIdList })}`])
         .send(reqBody)
@@ -1514,7 +1514,7 @@ describe('Integration API Test: ', () => {
         isSuccess: true,
       };
       return await request(app)
-        .delete('/api/mycart')
+        .post('/api/mycart/delete')
         .set('Content-Type', 'application/json')
         .set('Cookie', [`wish=${signJWTForWish({ itemIdList: unsorteditemIdList })}`])
         .send(reqBody)
@@ -1549,7 +1549,7 @@ describe('Integration API Test: ', () => {
         isSuccess: true,
       };
       return await request(app)
-        .delete('/api/mycart')
+        .post('/api/mycart/delete')
         .set('Content-Type', 'application/json')
         .set('Cookie', [`wish=INVALID`, `auth=INVALID`])
         .send(reqBody)
@@ -1581,7 +1581,7 @@ describe('Integration API Test: ', () => {
         isSuccess: true,
       };
       return await request(app)
-        .delete('/api/mycart')
+        .post('/api/mycart/delete')
         .set('Content-Type', 'application/json')
         .set('Cookie', [`wish=INVALID`, `auth=${userInfo['Valid@Lot.Cash'].auth}`])
         .send(reqBody)
@@ -1611,7 +1611,7 @@ describe('Integration API Test: ', () => {
         isSuccess: true,
       };
       return await request(app)
-        .delete('/api/mycart')
+        .post('/api/mycart/delete')
         .set('Content-Type', 'application/json')
         .set('Cookie', [`wish=INVALID`, `auth=${userInfo['Valid@Test.Wish'].auth}`])
         .send(reqBody)
@@ -1642,7 +1642,7 @@ describe('Integration API Test: ', () => {
         isSuccess: true,
       };
       return await request(app)
-        .delete('/api/mycart')
+        .post('/api/mycart/delete')
         .set('Content-Type', 'application/json')
         .set('Cookie', [
           `wish=${signJWTForWish({ itemIdList: unfiltereditemIdList })}`,
@@ -1683,7 +1683,7 @@ describe('Integration API Test: ', () => {
         isSuccess: true,
       };
       return await request(app)
-        .delete('/api/mycart')
+        .post('/api/mycart/delete')
         .set('Content-Type', 'application/json')
         .set('Cookie', [
           `wish=${signJWTForWish({ itemIdList: unsorteditemIdList })}`,
@@ -1724,7 +1724,7 @@ describe('Integration API Test: ', () => {
         isSuccess: true,
       };
       return await request(app)
-        .delete('/api/mycart')
+        .post('/api/mycart/delete')
         .set('Content-Type', 'application/json')
         .set('Cookie', [
           `wish=${signJWTForWish({ itemIdList: unfiltereditemIdList })}`,
@@ -1763,7 +1763,7 @@ describe('Integration API Test: ', () => {
         isSuccess: true,
       };
       return await request(app)
-        .delete('/api/mycart')
+        .post('/api/mycart/delete')
         .set('Content-Type', 'application/json')
         .set('Cookie', [
           `wish=${signJWTForWish({ itemIdList: unfiltereditemIdList })}`,
@@ -1802,7 +1802,7 @@ describe('Integration API Test: ', () => {
         isSuccess: true,
       };
       return await request(app)
-        .delete('/api/mycart')
+        .post('/api/mycart/delete')
         .set('Content-Type', 'application/json')
         .set('Cookie', [
           `wish=${signJWTForWish({ itemIdList: unsorteditemIdList })}`,
@@ -1841,7 +1841,7 @@ describe('Integration API Test: ', () => {
         isSuccess: true,
       };
       return await request(app)
-        .delete('/api/mycart')
+        .post('/api/mycart/delete')
         .set('Content-Type', 'application/json')
         .set('Cookie', [
           `wish=${signJWTForWish({ itemIdList: unsorteditemIdList })}`,

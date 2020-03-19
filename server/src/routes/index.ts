@@ -10,8 +10,8 @@ import { purchaseItems } from '../controller/purchaseItems';
 
 export const AppRoutes = [
   {
-    path: '/api/mycart',
-    method: 'delete',
+    path: '/api/mycart/delete',
+    method: 'post',
     action: deleteMyCart,
   },
   {
