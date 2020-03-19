@@ -120,6 +120,7 @@ const itemList = createReducer<ShoppingCartState, ShoppingCartAction>(
         },
       }
     ) => {
+      debugger;
       const newOption = { id, color, size, stock };
       let newPurchaseList = [];
       let isItemFound = false;
@@ -137,7 +138,7 @@ const itemList = createReducer<ShoppingCartState, ShoppingCartAction>(
               newOptionList.push(option);
             } else {
               isOptionFound = true;
-              newOptionList.push({ newOption });
+              newOptionList.push(newOption);
             }
           }
           if (!isOptionFound) {
