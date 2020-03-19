@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Button, Alert, Tooltip, Input, BackTop } from 'antd';
 import { HomeFilled } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
+import debounce from 'lodash.debounce';
 
 import { RootState } from '../../modules';
 import {
@@ -39,6 +40,19 @@ const ItemList: React.FC = () => {
     // search할 때 적용
     dispatch(searchThunk(query));
   };
+
+  window.onscroll = debounce(() => {
+    let marginToStartLoad = 100;
+    // infinite scroll
+    if (
+      document.documentElement.clientHeight +
+        document.documentElement.scrollTop +
+        marginToStartLoad >=
+      document.documentElement.scrollHeight
+    ) {
+      onGetMoreItems();
+    }
+  }, 100);
 
   useEffect(() => {
     onGetMoreItems();

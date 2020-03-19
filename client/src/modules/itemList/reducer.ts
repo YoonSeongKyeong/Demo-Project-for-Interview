@@ -78,7 +78,8 @@ const itemList = createReducer<ItemListState, ItemListAction>(initialState, {
       GET_MORE_ITEMS: 'OK',
     },
     items: [...state.items, ...action.payload],
-    page: state.page + 1,
+    page: action.payload.length !== 0 ? state.page + 1 : -1,
+    // 이미 items를 전부 받아온 상태를 page = -1로 정의하고 page가 -1일 때는 요청을 더 하지 않는다.
   }),
   [GET_MORE_ITEMS_ERROR]: state => ({
     ...state,
@@ -94,6 +95,7 @@ const itemList = createReducer<ItemListState, ItemListAction>(initialState, {
       SEARCH: 'LOADING',
     },
     query: action.payload,
+    items: [],
   }),
   [SEARCH_SUCCESS]: (state, action) => ({
     ...state,
@@ -102,7 +104,8 @@ const itemList = createReducer<ItemListState, ItemListAction>(initialState, {
       SEARCH: 'OK',
     },
     items: [...(action.payload as ItemForm[])], // 새로 검색한 아이템들로 채운다.
-    page: 0,
+    page: action.payload.length !== 0 ? 0 : -1,
+    // 이미 items를 전부 받아온 상태를 page = -1로 정의하고 page가 -1일 때는 요청을 더 하지 않는다.
   }),
   [SEARCH_ERROR]: state => ({
     ...state,
