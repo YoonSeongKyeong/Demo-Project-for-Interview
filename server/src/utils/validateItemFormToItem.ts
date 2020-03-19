@@ -1,7 +1,7 @@
 import {
   ValidateItemFormToItemInput,
   ValidateItemFormToItemOutput,
-} from 'src/interface/serversideSpecific';
+} from '../interface/serversideSpecific';
 
 export const validateItemFormToItem = ({
   itemForm,

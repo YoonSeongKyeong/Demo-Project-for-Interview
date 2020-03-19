@@ -3,7 +3,7 @@ import { GetMyCartRes, ItemForm } from '../interface/api';
 import { UserService } from '../service/UserService';
 import { ItemService } from '../service/ItemService';
 import { WishService } from '../service/WishService';
-import { TokenForAuth, TokenForWish, ItemIdList } from 'src/interface/serversideSpecific';
+import { TokenForAuth, TokenForWish, ItemIdList } from '../interface/serversideSpecific';
 import { configs } from '../utils/configs';
 import { extractJWT } from '../utils/extractJWT';
 import { signJWTForWish } from '../utils/signJWT';

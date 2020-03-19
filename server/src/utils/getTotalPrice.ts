@@ -1,4 +1,4 @@
-import { ItemForm } from 'src/interface/api';
+import { ItemForm } from '../interface/api';
 
 interface BundleFeeObj {
   [provider: string]: {
