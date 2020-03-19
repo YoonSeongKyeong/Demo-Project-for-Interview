@@ -1,3 +1,5 @@
+import { ItemForm_Option } from '../../interface/api';
+
 export const GET_ITEMS_FROM_WISHLIST = 'shoppingCart/GET_ITEMS_FROM_WISHLIST';
 export const GET_ITEMS_FROM_WISHLIST_SUCCESS =
   'shoppingCart/GET_ITEMS_FROM_WISHLIST_SUCCESS';
@@ -16,3 +18,13 @@ export const ADD_OPTION_TO_PURCHASELIST =
   'shoppingCart/ADD_OPTION_TO_PURCHASELIST';
 export const DELETE_OPTION_FROM_PURCHASELIST =
   'shoppingCart/DELETE_OPTION_FROM_PURCHASELIST';
+
+export type addOptionToPurchaseListActionInput = {
+  itemId: number;
+  option: ItemForm_Option;
+};
+
+export type deleteOptionFromPurchaseListActionInput = {
+  itemId: number;
+  optionId: number;
+};
