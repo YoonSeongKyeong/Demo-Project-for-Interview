@@ -26,7 +26,7 @@ import { getTotalPriceByItemFormList } from '../../libs/getTotalPrice';
 // backToHome: 홈으로 돌아간다.
 
 const ShoppingCart: React.FC = () => {
-  const [selectionList, setSelectionList] = useState([]);
+  const [selectionList, setSelectionList] = useState([]); // checkbox를 선택한 아이템들의 id 목록
 
   // 상태를 조회합니다. 상태를 조회 할 때에는 state 의 타입을 RootState 로 지정해야합니다.
   const { wishList, purchaseList } = useSelector(
