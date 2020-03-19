@@ -27,7 +27,8 @@ export async function isSignIn(request: Request, response: Response): Promise<vo
           domain: configs.CLIENT_DOMAIN,
           path: '/',
         })
-        .status(404).send;
+        .status(404)
+        .send();
       return;
     }
     console.log('ERROR: ' + error.message);
