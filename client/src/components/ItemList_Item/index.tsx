@@ -19,7 +19,7 @@ const ItemList_Item: React.FC<itemProps> = ({ item, onAddItemToWishList }) => {
       <Card
         className="item-list-card i-block"
         hoverable
-        cover={<img src={item.titleImage} />}
+        cover={<img src={item.titleImage} alt="" />}
       >
         <Meta title={item.name} description={`${item.provider}`} />
         <Meta title={item.price} />
