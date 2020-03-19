@@ -163,7 +163,11 @@ const ShoppingCart: React.FC = () => {
 
       <Card title="Purchase List" className="align-left margin-top-1rem">
         {purchaseList.map(item => (
-          <Choice item={item} key={item.id} />
+          <Choice
+            item={item}
+            key={item.id}
+            onDeleteOptionFromPurchaseList={onDeleteOptionFromPurchaseList}
+          />
         ))}
       </Card>
 
