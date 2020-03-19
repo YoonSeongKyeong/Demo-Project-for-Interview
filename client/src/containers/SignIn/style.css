@@ -1,0 +1,27 @@
+.text-center {
+    text-align: center;
+  }
+  
+  .align-center {
+    right: auto;
+    left: auto;
+  }
+  
+  .width-third-center {
+    width: 33%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .SignIn-normal-item{
+    margin-top: 1rem;
+  }
+  
+  .SignIn-normal-item + .SignIn-normal-item{
+    margin-left: 1rem;
+  }
+
+  .center {
+    display: inline-block;
+    margin: 3rem 3rem 3rem 3rem;
+  }
