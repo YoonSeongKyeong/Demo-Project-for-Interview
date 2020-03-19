@@ -69,7 +69,7 @@ export class ItemService {
     const getItems = await this.itemRepository.find({
       relations: ['provider', 'options', 'shipping'],
       where: { name: Like(`%${query}%`) },
-      skip: offset,
+      skip: offset * limit,
       take: limit,
     });
     return this.ConvertItemEntityListToItemFormList(getItems);
