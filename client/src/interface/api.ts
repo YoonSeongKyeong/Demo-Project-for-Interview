@@ -7,6 +7,7 @@ import {
   Shipping_Dependency,
   Wish_Dependency,
   Purchased_Dependency,
+  User_Dependency,
 } from './dependency';
 
 export interface GetItemsReq extends Item_Dependency {
@@ -68,5 +69,14 @@ export interface DeleteMyCartReq extends Item_Dependency, Wish_Dependency {
 }
 
 export interface DeleteMyCartRes extends Wish_Dependency {
+  isSuccess: boolean;
+}
+
+export interface SignInReq extends User_Dependency {
+  email: string;
+  password: string;
+}
+
+export interface SignInRes extends User_Dependency {
   isSuccess: boolean;
 }
