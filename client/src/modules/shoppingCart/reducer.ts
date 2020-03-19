@@ -50,13 +50,13 @@ const itemList = createReducer<ShoppingCartState, ShoppingCartAction>(
         GET_ITEMS_FROM_WISHLIST: 'LOADING',
       },
     }),
-    [GET_ITEMS_FROM_WISHLIST_SUCCESS]: (state, action) => ({
+    [GET_ITEMS_FROM_WISHLIST_SUCCESS]: (state, { payload }) => ({
       ...state,
       requestStatus: {
         ...state.requestStatus,
         GET_ITEMS_FROM_WISHLIST: 'OK',
       },
-      wishList: [...action.payload],
+      wishList: [...payload],
     }),
     [GET_ITEMS_FROM_WISHLIST_ERROR]: state => ({
       ...state,
@@ -110,6 +110,49 @@ const itemList = createReducer<ShoppingCartState, ShoppingCartAction>(
         ...state.requestStatus,
         PURCHASE_ITEMS: 'ERROR', // !ISSUE 이후 ERROR에 대한 Handling Action 필요
       },
+    }),
+    [ADD_OPTION_TO_PURCHASELIST]: (
+      state,
+      {
+        payload: {
+          itemId,
+          option: { id, color, size, stock },
+        },
+      }
+    ) => ({
+      ...state,
+      purchaseList: state.purchaseList.map(item => {
+        if (item.id !== itemId) {
+          return item;
+        }
+        let isOptionFound = false;
+        const newOptions = item.options.map(option => {
+          if (option.id === id) {
+            isOptionFound = true;
+            return { id, color, size, stock };
+          }
+          return option;
+        });
+        if (!isOptionFound) {
+          newOptions.push({ id, color, size, stock });
+        }
+        return { ...item, options: newOptions };
+      }),
+    }),
+    [DELETE_OPTION_FROM_PURCHASELIST]: (
+      state,
+      { payload: { itemId, optionId } }
+    ) => ({
+      ...state,
+      purchaseList: state.purchaseList.map(item => {
+        if (item.id !== itemId) {
+          return item;
+        }
+        return {
+          ...item,
+          options: item.options.filter(option => option.id !== optionId),
+        };
+      }),
     }),
   }
 );
