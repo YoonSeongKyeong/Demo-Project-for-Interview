@@ -4,11 +4,10 @@ import { SignInReq, SignInRes } from '../../interface/api';
 
 export const signIn = async ({ email, password }: SignInReq) => {
   try {
-    debugger;
     const {
       data: { isSuccess },
     }: AxiosResponse<SignInRes> = await Axios.post(
-      `api/signin`,
+      `api/signIn`,
       { email, password },
       {
         withCredentials: true,
@@ -24,6 +23,30 @@ export const signIn = async ({ email, password }: SignInReq) => {
   } catch (error) {
     if (error.message === 'Request failed with status code 404') {
       alert('로그인 정보가 유효하지 않습니다.');
+    } else {
+      alert('에러가 발생했습니다!');
+    }
+    throw error;
+  }
+};
+
+export const isSignIn = async () => {
+  // 이미 로그인 되어 있는지 확인한다.
+  try {
+    const {
+      data: { isSuccess },
+    }: AxiosResponse<SignInRes> = await Axios.get(`api/isSignIn`, {
+      withCredentials: true,
+    });
+    if (isSuccess) {
+      // !ISSUE 나중에 어떤 오류로 requset가 성공하지 못했는지 message를 추가해서 알리는 게 좋다.
+      alert('이미 로그인되어 있습니다.');
+      return true;
+    }
+  } catch (error) {
+    if (error.message === 'Request failed with status code 404') {
+      // 로그인 정보를 찾을 수 없는 정상적인 상황
+      return false;
     } else {
       alert('에러가 발생했습니다!');
     }

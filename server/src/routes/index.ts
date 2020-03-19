@@ -38,7 +38,7 @@ export const AppRoutes = [
     action: purchaseItems,
   },
   {
-    path: '/api/signin',
+    path: '/api/signIn',
     method: 'post',
     action: signIn,
   },
