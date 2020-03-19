@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import { configs } from '../utils/configs';
 import { extractJWT } from '../utils/extractJWT';
-import { TokenForAuth } from 'src/interface/serversideSpecific';
-import { UserService } from 'src/service/UserService';
+import { TokenForAuth } from '../interface/serversideSpecific';
+import { UserService } from '../service/UserService';
 
 // 로그인 상태인지 확인
 
@@ -19,12 +19,14 @@ export async function isSignIn(request: Request, response: Response): Promise<vo
     }
     response.status(404).send();
   } catch (error) {
-    if (error.message !== 'cannot find token in cookie [auth]') {
-      response.clearCookie('auth', {
-        httpOnly: true,
-        domain: configs.CLIENT_DOMAIN,
-        path: '/',
-      });
+    if (error.message === 'cannot find token in cookie [auth]') {
+      response
+        .clearCookie('auth', {
+          httpOnly: true,
+          domain: configs.CLIENT_DOMAIN,
+          path: '/',
+        })
+        .status(404).send;
     }
     console.log('ERROR: ' + error.message);
     response.status(500).send(error.message);
