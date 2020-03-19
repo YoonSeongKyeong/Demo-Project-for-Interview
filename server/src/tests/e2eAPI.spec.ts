@@ -190,11 +190,11 @@ describe('Integration API Test: ', () => {
             });
         });
     });
-    it('GET items with specified offset = 1, which is not equal to items with offset = 2', async () => {
+    it('GET items with specified offset = 0, which is not equal to items with offset = 1', async () => {
+      const offsetZero = '0';
       const offsetOne = '1';
-      const offsetTwo = '2';
-      const reqBody: GetItemsReq = { offset: offsetOne };
-      const newReqBody: GetItemsReq = { offset: offsetTwo };
+      const reqBody: GetItemsReq = { offset: offsetZero };
+      const newReqBody: GetItemsReq = { offset: offsetOne };
       const resBody: GetItemsRes = {
         goods: [
           {
@@ -217,7 +217,7 @@ describe('Integration API Test: ', () => {
         .expect('Content-Type', 'application/json; charset=utf-8')
         .then(async res => {
           expect(isConformToInterface(res.body, resBody)).toBeTruthy();
-          const itemListWithOffsetOne = res.body.goods;
+          const itemListWithOffsetZero = res.body.goods;
           await request(app)
             .get('/api/items')
             .set('Content-Type', 'application/json')
@@ -227,11 +227,11 @@ describe('Integration API Test: ', () => {
             .expect('Content-Type', 'application/json; charset=utf-8')
             .then(newRes => {
               expect(isConformToInterface(newRes.body, resBody)).toBeTruthy();
-              const itemListWithOffsetTwo = newRes.body.goods;
-              expect(itemListWithOffsetOne.length).toEqual(itemListWithOffsetTwo.length);
-              const len = itemListWithOffsetOne.length;
+              const itemListWithOffsetOne = newRes.body.goods;
+              expect(itemListWithOffsetZero.length).toEqual(itemListWithOffsetOne.length);
+              const len = itemListWithOffsetZero.length;
               for (let i = 0; i < len; i++) {
-                expect(itemListWithOffsetOne[i].id).not.toEqual(itemListWithOffsetTwo[i].id);
+                expect(itemListWithOffsetZero[i].id).not.toEqual(itemListWithOffsetOne[i].id);
               }
             });
         });
