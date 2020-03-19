@@ -9,7 +9,7 @@ import { RootState } from '../../modules';
 import {
   addItemToWishListThunk,
   getMoreItemsThunk,
-  searchThunk,
+  searchItemsThunk,
 } from '../../modules/itemList';
 import Item from '../../components/ItemList_Item';
 import './style.css';
@@ -38,7 +38,7 @@ const ItemList: React.FC = () => {
 
   const onSearch = (query: string) => {
     // search할 때 적용
-    dispatch(searchThunk(query));
+    dispatch(searchItemsThunk(query));
   };
 
   window.onscroll = debounce(() => {

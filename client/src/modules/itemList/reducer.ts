@@ -8,9 +8,9 @@ import {
   ADD_ITEM_TO_WISHLIST,
   ADD_ITEM_TO_WISHLIST_SUCCESS,
   ADD_ITEM_TO_WISHLIST_ERROR,
-  SEARCH,
-  SEARCH_SUCCESS,
-  SEARCH_ERROR,
+  SEARCH_ITEMS,
+  SEARCH_ITEMS_SUCCESS,
+  SEARCH_ITEMS_ERROR,
 } from './types';
 
 // 이 리덕스 모듈에서 관리 할 상태의 타입을 선언합니다
@@ -19,7 +19,7 @@ export type ItemListState = {
     // OK | LOADING | ERROR
     ADD_ITEM_TO_WISHLIST: string;
     GET_MORE_ITEMS: string;
-    SEARCH: string;
+    SEARCH_ITEMS: string;
   };
   items: ItemForm[]; // 상품 정보 리스트
   query: string; // 검색어
@@ -32,7 +32,7 @@ const initialState: ItemListState = {
   requestStatus: {
     ADD_ITEM_TO_WISHLIST: 'OK',
     GET_MORE_ITEMS: 'OK',
-    SEARCH: 'OK',
+    SEARCH_ITEMS: 'OK',
   },
   items: [],
   query: '',
@@ -88,30 +88,30 @@ const itemList = createReducer<ItemListState, ItemListAction>(initialState, {
       GET_MORE_ITEMS: 'ERROR', // !ISSUE 이후 ERROR에 대한 Handling Action 필요
     },
   }),
-  [SEARCH]: (state, action) => ({
+  [SEARCH_ITEMS]: (state, action) => ({
     ...state,
     requestStatus: {
       ...state.requestStatus,
-      SEARCH: 'LOADING',
+      SEARCH_ITEMS: 'LOADING',
     },
     query: action.payload,
     items: [],
   }),
-  [SEARCH_SUCCESS]: (state, action) => ({
+  [SEARCH_ITEMS_SUCCESS]: (state, action) => ({
     ...state,
     requestStatus: {
       ...state.requestStatus,
-      SEARCH: 'OK',
+      SEARCH_ITEMS: 'OK',
     },
     items: [...(action.payload as ItemForm[])], // 새로 검색한 아이템들로 채운다.
     page: action.payload.length !== 0 ? 0 : -1,
     // 이미 items를 전부 받아온 상태를 page = -1로 정의하고 page가 -1일 때는 요청을 더 하지 않는다.
   }),
-  [SEARCH_ERROR]: state => ({
+  [SEARCH_ITEMS_ERROR]: state => ({
     ...state,
     requestStatus: {
       ...state.requestStatus,
-      SEARCH: 'ERROR', // !ISSUE 이후 ERROR에 대한 Handling Action 필요
+      SEARCH_ITEMS: 'ERROR', // !ISSUE 이후 ERROR에 대한 Handling Action 필요
     },
   }),
 });
