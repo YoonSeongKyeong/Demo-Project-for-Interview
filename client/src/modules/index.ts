@@ -1,8 +1,10 @@
 import { combineReducers } from 'redux';
 import itemList from './itemList';
+import shoppingCart from './shoppingCart';
 
 const rootReducer = combineReducers({
   itemList,
+  shoppingCart,
 });
 
 // 루트 리듀서를 내보내주세요.
