@@ -51,11 +51,11 @@ const ShoppingCart: React.FC = () => {
   };
 
   const onAddOptionToPurchaseList = ({
-    itemId,
+    targetItem,
     option,
   }: addOptionToPurchaseListActionInput) => {
     // 상품 옵션을 구매 목록에 추가하는데 사용
-    dispatch(addOptionToPurchaseList({ itemId, option }));
+    dispatch(addOptionToPurchaseList({ targetItem, option }));
   };
 
   const onDeleteOptionFromPurchaseList = ({

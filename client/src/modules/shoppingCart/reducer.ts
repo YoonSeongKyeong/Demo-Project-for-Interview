@@ -115,30 +115,46 @@ const itemList = createReducer<ShoppingCartState, ShoppingCartAction>(
       state,
       {
         payload: {
-          itemId,
+          targetItem,
           option: { id, color, size, stock },
         },
       }
-    ) => ({
-      ...state,
-      purchaseList: state.purchaseList.map(item => {
-        if (item.id !== itemId) {
-          return item;
-        }
-        let isOptionFound = false;
-        const newOptions = item.options.map(option => {
-          if (option.id === id) {
-            isOptionFound = true;
-            return { id, color, size, stock };
+    ) => {
+      const newOption = { id, color, size, stock };
+      let newPurchaseList = [];
+      let isItemFound = false;
+      for (let item of state.purchaseList) {
+        // 새option이 속한 item이 이미 purchaseList에 있는지 확인한다.
+        if (item.id !== targetItem.id) {
+          newPurchaseList.push(item);
+        } else {
+          let newOptionList = [];
+          isItemFound = true;
+          let isOptionFound = false;
+          for (let option of item.options) {
+            // 새 option이 이미 item의 options 안에 있는지 확인한다.
+            if (option.id !== id) {
+              newOptionList.push(option);
+            } else {
+              isOptionFound = true;
+              newOptionList.push({ newOption });
+            }
           }
-          return option;
-        });
-        if (!isOptionFound) {
-          newOptions.push({ id, color, size, stock });
+          if (!isOptionFound) {
+            // options 안에 없으면 새 option을 추가한다.
+            newOptionList.push(newOption);
+          }
+          let newItem = { ...item, options: newOptionList };
+          newPurchaseList.push(newItem);
         }
-        return { ...item, options: newOptions };
-      }),
-    }),
+      }
+      if (!isItemFound) {
+        // purchaseList 안에 없으면 새 item을 추가한다.
+        let newItem = { ...targetItem, options: [newOption] };
+        newPurchaseList.push(newItem);
+      }
+      return { ...state, purchaseList: newPurchaseList };
+    },
     [DELETE_OPTION_FROM_PURCHASELIST]: (
       state,
       { payload: { itemId, optionId } }

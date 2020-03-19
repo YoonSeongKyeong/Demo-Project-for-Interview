@@ -13,7 +13,7 @@ type itemProps = {
   item: ItemForm;
   onDeleteItemFromWishList: (itemId: number) => void;
   onAddOptionToPurchaseList: ({
-    itemId,
+    targetItem,
     option,
   }: addOptionToPurchaseListActionInput) => void;
   onSelect: (itemId: number) => void;
@@ -61,7 +61,7 @@ const ShoppingCart_Item: React.FC<itemProps> = ({
   const onAdd = () => {
     if (numOfItemsToBuy > 0) {
       onAddOptionToPurchaseList({
-        itemId: item.id,
+        targetItem: item,
         option: {
           ...item.options[selectedOptionIndex],
           stock: numOfItemsToBuy,
