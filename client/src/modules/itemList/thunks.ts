@@ -1,7 +1,7 @@
 import { ThunkAction } from 'redux-thunk';
 import { RootState } from '..';
 import { ActionType } from 'typesafe-actions';
-import { addItemToWishListAsync, getMoreItemsAsync, searchAsync } from '.';
+import { addItemToWishListAsync, getMoreItemsAsync, searchItemsAsync } from '.';
 import { postItemIdToWishList, getItems } from '../../api/itemList';
 import { ItemListState } from './reducer';
 
@@ -57,12 +57,17 @@ export function getMoreItemsThunk(): ThunkAction<
   };
 }
 
-export function searchThunk(
+export function searchItemsThunk(
   query: string
-): ThunkAction<Promise<void>, RootState, null, ActionType<typeof searchAsync>> {
+): ThunkAction<
+  Promise<void>,
+  RootState,
+  null,
+  ActionType<typeof searchItemsAsync>
+> {
   return async (dispatch, getState) => {
     let { limit } = getState().itemList as ItemListState;
-    const { request, success, failure } = searchAsync;
+    const { request, success, failure } = searchItemsAsync;
     dispatch(request(query));
     try {
       const items = await getItems({
