@@ -136,6 +136,7 @@ const ShoppingCart_Item: React.FC<itemProps> = ({
             ))}
           </Select>
           <InputNumber
+            value={numOfItemsToBuy}
             className="margin-1rem"
             min={minNum}
             max={maxNum}
