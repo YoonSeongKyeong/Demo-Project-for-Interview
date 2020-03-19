@@ -16,9 +16,10 @@ const SignIn: React.FC<RouteComponentProps> = props => {
     }
   };
 
-  const onFinish = ({ email, password }) => {
-    signIn({ email, password });
-    props.history.push('/'); // go to home
+  const onFinish = async ({ email, password }) => {
+    if (await signIn({ email, password })) {
+      props.history.push('/'); // go to home
+    }
   };
 
   const onFinishFailed = errorInfo => {
