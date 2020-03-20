@@ -55,7 +55,7 @@ const ItemList: React.FC = () => {
   }, 100);
 
   useEffect(() => {
-    onGetMoreItems();
+    onSearch('');
   }, []); // ComponentDidMount와 같은 효과로 사용하기 위해 []를 두번째 인자로 사용해야 한다.
 
   return (
