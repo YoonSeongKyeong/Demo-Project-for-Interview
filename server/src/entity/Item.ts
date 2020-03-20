@@ -13,7 +13,7 @@ export class Item {
   @Column()
   name: string; // 상품 이름
 
-  @Column()
+  @Column({ length: '1024' })
   titleImage: string; // 상품 대표 이미지 URL
 
   @Column()
