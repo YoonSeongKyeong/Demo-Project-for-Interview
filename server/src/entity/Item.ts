@@ -13,8 +13,8 @@ export class Item {
   @Column()
   name: string; // 상품 이름
 
-  @Column({ type: 'blob' })
-  titleImage: string; // 상품 대표 이미지
+  @Column({ length: '1024' })
+  titleImage: string; // 상품 대표 이미지 URL
 
   @Column()
   price: number; // 상품 가격
